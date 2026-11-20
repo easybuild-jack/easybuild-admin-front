@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { getDetail } from '@/api/order'
-import type { OrderInfo } from '@/types/order'
+import type { OrderInfo, AmountInfo } from '@/types/order'
 import {
   getOrderStatusConfig,
   getOrderTypeConfig,

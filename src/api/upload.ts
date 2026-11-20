@@ -10,14 +10,6 @@ interface UploadApiResponse {
 export const uploadApi = {
   uploadFile: async (file: File, folder: string = 'common', onProgress?: (progress: number) => void): Promise<string> => {
     try {
-      console.log('开始上传文件:', {
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
-        folder,
-        uploadUrl: `${UPLOAD_API_URL}/file/upload`
-      })
-
       const formData = new FormData()
       formData.append('file', file)
       formData.append('folder', folder)
@@ -33,11 +25,6 @@ export const uploadApi = {
         }
         
         xhr.onload = () => {
-          console.log('上传响应:', {
-            status: xhr.status,
-            response: xhr.responseText
-          })
-
           if (xhr.status === 200) {
             try {
               const response = JSON.parse(xhr.responseText)
@@ -77,10 +64,6 @@ export const uploadApi = {
       
       // 获取token
       const token = localStorage.getItem('token')
-      console.log('认证信息:', {
-        hasToken: !!token,
-        tokenLength: token?.length
-      })
 
       xhr.open('POST', `${UPLOAD_API_URL}/file/upload`, true)
       

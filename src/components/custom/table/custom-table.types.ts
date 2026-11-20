@@ -9,17 +9,25 @@ export interface TableSelection {
 }
 
 // 列配置接口
-export type TableColumn<T, K extends keyof T = keyof T> = K extends any ? {
-    key: K extends string ? K : string           // 列标识必须是 T 的键
+// 注意：这里必须是单一对象类型，不能写成 `K extends any ? {...} : never` 的分发联合。
+// 分发联合会让每个列对象的 key 收窄成某个字面量，导致 TS 无法对列对象做上下文类型推断，
+// render 的 record 参数就会退化为隐式 any（TS7006）。
+export type TableColumnKey<T> = Extract<keyof T, string> | 'selection' | 'action' | 'operation' | 'index' | 'expand'
+
+export interface TableColumn<T> {
+    key: TableColumnKey<T>                       // 列标识：T 的键，或内置的伪列标识
     title: string                                // 列标题
     width?: number | string                      // 列宽度
     fixed?: 'left' | 'right'                    // 固定列
     align?: 'left' | 'center' | 'right'         // 对齐方式
     className?: string                          // 自定义类名
-    render?: (value: T[K], record: T, index: number) => ReactNode  // 更严格的渲染函数类型
+    // value 为宽松类型：一个列数组里每列的 key 不同，TS 无法为每列单独推断出 value 类型，
+    // 若声明为 T[keyof T] 会变成大联合类型，反而让已有的窄类型 render 实现报错。
+    // record 保持严格的 T，这是实际使用中最需要类型提示的部分。
+    render?: (value: any, record: T, index: number) => ReactNode
     sortable?: boolean                          // 是否可排序
     filterable?: boolean                        // 是否可筛选
-} : never;
+}
 
 // 分页配置接口
 export interface TablePagination {

@@ -56,7 +56,7 @@ export default function OrderGoodsDialog({ orderId, open, onOpenChange }: OrderG
         return typeof price === 'object' ? price.parsedValue : price
     }
 
-    const columns: TableColumn<any, any>[] = [
+    const columns: TableColumn<any>[] = [
         {
             key: 'goodsPicUrl',
             title: '商品图片',

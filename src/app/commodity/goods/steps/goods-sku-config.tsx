@@ -194,9 +194,6 @@ export function GoodsSkuConfig({ initialData, onSubmit, loading }: Props) {
                     placeholder="上传图片"
                     preview
                     folder="goods"
-                    onUploading={(uploading) => {
-                      console.log('Upload status:', uploading)
-                    }}
                     hideError
                     className="w-20 h-20"
                   />

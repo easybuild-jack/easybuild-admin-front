@@ -25,8 +25,8 @@ export const useMenuStore = create<MenuState>((set, get) => ({
   allMenusExpanded: false,
   expandedMenus: new Set<string>(),
   fetchMenus: async () => {
-    // 如果已经初始化过，直接返回
-    if (get().initialized) return
+    // 如果已经初始化过，或正在请求中，直接返回，避免重复请求
+    if (get().initialized || get().loading) return
 
     try {
       set({ loading: true })
@@ -40,6 +40,7 @@ export const useMenuStore = create<MenuState>((set, get) => ({
           set({
             menuItems: allRoutes,
             expandedMenus: new Set<string>(),
+            loading: false,
             initialized: true
           })
           return
@@ -53,20 +54,22 @@ export const useMenuStore = create<MenuState>((set, get) => ({
 
       if (dynamicRoutes && dynamicRoutes.length > 0) {
         const allRoutes = [...routes, ...dynamicRoutes]
-        set({ 
+        set({
           menuItems: allRoutes,
           expandedMenus: new Set<string>()
         })
         // 缓存新的菜单数据
         menuCache.set(menuData)
       }
+      // 只有成功拿到菜单才标记已初始化，失败时保留 false，下次进入页面会重新请求
+      set({ loading: false, initialized: true })
     } catch (error: any) {
+      // 失败时不置 initialized，保证网络抖动后还能重试
+      set({ loading: false })
       showError({
         title: "获取菜单失败",
         description: error.message || "请刷新页面重试"
       })
-    } finally {
-      set({ loading: false, initialized: true })
     }
   },
   toggleAllMenus: () => {

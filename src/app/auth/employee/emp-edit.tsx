@@ -169,11 +169,6 @@ export function EmployeeEdit({
                     // 加载角色数据
                     const roles = await getRoleSelectList({})
                     setRoleOptions(roles)
-
-                    // 如果是编辑模式，确保手机号正确回显
-                    if (editingEmployee) {
-                        console.log('Editing employee data:', editingEmployee)
-                    }
                 } finally {
                     setIsInitializing(false)
                 }
@@ -186,7 +181,6 @@ export function EmployeeEdit({
     const handleSubmit = async (data: z.infer<typeof formSchema>) => {
         try {
             setIsSubmitting(true)
-            console.log('Form data before submit:', data)
             await onSubmit(data)
             onOpenChange(false)
         } finally {

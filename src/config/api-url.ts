@@ -1,5 +1,3 @@
-import { group } from "console"
-
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'
 export const UPLOAD_API_URL = process.env.NEXT_PUBLIC_UPLOAD_API_URL || 'http://192.168.100.250:9008'
 
@@ -97,6 +95,7 @@ export const API_URLS = {
     save: '/bms/commodity/goods/addOrEdit',
     delete: '/bms/commodity/goodsInfo/delete',
     editBasic: '/bms/commodity/goods/editBasic', //编辑基本信息
+    editSpu: '/bms/commodity/goods/editSpu', //编辑spu
     editSku: '/bms/commodity/goods/editSku', //编辑sku
     editDetail: '/bms/commodity/goods/editDetail', //编辑详情
     editExplain: '/bms/commodity/goods/editExplain', //编辑说明

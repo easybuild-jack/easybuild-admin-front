@@ -497,29 +497,18 @@ export function FileUpload({
   const acceptTypes = accept || defaultAccept
 
   const validateFile = useCallback((file: File): boolean => {
-    console.log('开始验证文件:', {
-      fileName: file.name,
-      fileSize: file.size,
-      maxSize: maxSize,
-      fileType: file.type,
-      acceptTypes: acceptTypes
-    })
-
     if (maxSize && file.size > maxSize) {
       const errorMsg = `文件大小不能超过 ${formatFileSize(maxSize)}`
-      console.log('文件大小验证失败:', errorMsg)
       setError(errorMsg)
       return false
     }
 
     if (!isValidFileType(file, acceptTypes)) {
       const errorMsg = `不支持的文件类型，支持的类型：${acceptTypes}`
-      console.log('文件类型验证失败:', errorMsg)
       setError(errorMsg)
       return false
     }
 
-    console.log('文件验证通过')
     return true
   }, [maxSize, acceptTypes])
 
@@ -779,17 +768,8 @@ export function FileUpload({
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
         accept={accept}
         onChange={(e) => {
-          console.log('文件选择事件触发', {
-            files: e.target.files,
-            hasFile: e.target.files && e.target.files.length > 0
-          })
           const file = e.target.files?.[0]
           if (file) {
-            console.log('选择的文件信息:', {
-              name: file.name,
-              size: file.size,
-              type: file.type
-            })
             handleFile(file)
           }
         }}

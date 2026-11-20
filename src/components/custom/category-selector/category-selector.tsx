@@ -84,7 +84,7 @@ export function CategorySelector({
 
         try {
             const data = await getCategoryDropdownList({
-                name: keyword,
+                categoryName: keyword,
                 level: level === 'first' ? 1 : level === 'second' ? 2 : 3,
                 parentId,
                 groupId

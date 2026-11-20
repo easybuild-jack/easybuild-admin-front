@@ -81,15 +81,15 @@ const SubMenuItem = memo(function SubMenuItem({
 
 // 子菜单列表组件 - 避免在父组件中做 map
 const SubMenuList = memo(function SubMenuList({
-  children,
+  items,
   pathname,
 }: {
-  children: RouteConfig[]
+  items: RouteConfig[]
   pathname: string
 }) {
   return (
     <SidebarMenuSub>
-      {children.map((subItem) => (
+      {items.map((subItem) => (
         <SubMenuItem
           key={subItem.href}
           subItem={subItem}
@@ -142,7 +142,7 @@ const CollapsibleMenuItem = memo(function CollapsibleMenuItem({
         </CollapsibleTrigger>
         <CollapsibleContent>
           {item.children && (
-            <SubMenuList children={item.children} pathname={pathname} />
+            <SubMenuList items={item.children} pathname={pathname} />
           )}
         </CollapsibleContent>
       </SidebarMenuItem>

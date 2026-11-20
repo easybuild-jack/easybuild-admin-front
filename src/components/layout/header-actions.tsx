@@ -85,7 +85,6 @@ export const HeaderActions = memo(function HeaderActions() {
               variant="ghost"
               size="icon"
               className="h-8 w-8"
-              onClick={() => console.log("切换语言")}
             >
               <Languages className="h-4 w-4 text-primary" />
             </Button>
@@ -100,7 +99,6 @@ export const HeaderActions = memo(function HeaderActions() {
               variant="ghost"
               size="icon"
               className="h-8 w-8"
-              onClick={() => console.log("通知")}
             >
               <Bell className="h-4 w-4 text-primary" />
             </Button>
