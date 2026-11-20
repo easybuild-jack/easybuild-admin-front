@@ -1,29 +1,29 @@
 'use client'
 
-import { useState,useEffect,useCallback,memo } from 'react'
+import { useState, useEffect, useCallback, useRef, memo } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
-import { Upload,Eye,Trash2,Play } from 'lucide-react'
+import { Upload, Eye, Trash2, Play } from 'lucide-react'
 import Image from 'next/image'
 import { uploadApi } from '@/api/upload'
 import { ImagePreview } from "../ui/image-preview"
 import { VideoPreview } from "../ui/video-preview"
 import { Progress } from "@/components/ui/progress"
 import {
-DndContext,
-closestCenter,
-KeyboardSensor,
-PointerSensor,
-useSensor,
-useSensors,
-DragEndEvent
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent
 } from '@dnd-kit/core'
 import {
-arrayMove,
-SortableContext,
-sortableKeyboardCoordinates,
-useSortable,
-rectSortingStrategy
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  rectSortingStrategy
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
@@ -48,8 +48,8 @@ interface FileUploadProps {
 
 interface FilePreviewProps {
   url: string
-  onPreview: () => void
-  onDelete: (e: React.MouseEvent) => void
+  onPreview: (url: string) => void
+  onDelete: (e: React.MouseEvent, url?: string) => void
   isLoading: boolean
   onLoad: (url: string) => void
   onError: (url: string) => void
@@ -66,23 +66,16 @@ const formatFileSize = (bytes: number): string => {
   return `${(bytes / Math.pow(k, i)).toFixed(1)} ${sizes[i]}`
 }
 
-const isValidUrl = (url: string): boolean => {
-  try {
-    new URL(url)
-    return true
-  } catch {
-    return false
-  }
-}
-
-// 添加文件类型常量
+// 文件类型常量
 const ACCEPT_TYPES = {
   image: '.jpg,.jpeg,.png,.gif,.bmp,.webp',
   video: '.mp4,.webm,.ogg,.mov,.avi',
   file: '.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,.txt,.zip,.rar'
-}
+} as const
 
-// 修改文件类型验证函数
+const VIDEO_EXT_REGEX = /\.(mp4|webm|ogg|mov|avi)$/
+
+// 文件类型验证函数
 const isValidFileType = (file: File, accept: string): boolean => {
   if (accept === '*') return true
 
@@ -91,50 +84,28 @@ const isValidFileType = (file: File, accept: string): boolean => {
   const acceptTypes = accept.split(',').map(type => type.trim().toLowerCase())
 
   return acceptTypes.some(type => {
-    // 处理 MIME 类型
     if (type.includes('/')) {
-      // 处理通配符，例如 image/*
       if (type.endsWith('/*')) {
         const mainType = type.split('/')[0]
         return fileType.startsWith(mainType + '/')
       }
       return fileType === type
     }
-    // 处理文件扩展名
     if (type.startsWith('.')) {
       return fileName.endsWith(type)
     }
-    // 处理其他通配符
     if (type.includes('*')) {
       const regex = new RegExp(type.replace('*', '.*'))
-      return fileType.match(regex)
+      return regex.test(fileType)
     }
     return false
   })
 }
 
-// 修改文件类型判断函数
 const isVideoFile = (url: string | undefined | null): boolean => {
   if (!url || typeof url !== 'string') return false
-  try {
-    const urlLower = url.toLowerCase()
-    return urlLower.match(/\.(mp4|webm|ogg|mov|avi)$/) !== null || urlLower.includes('video')
-  } catch (error) {
-    console.error('Error checking video file:', error)
-    return false
-  }
-}
-
-// 添加文件类型判断函数
-const isImageFile = (url: string | undefined | null): boolean => {
-  if (!url || typeof url !== 'string') return false
-  try {
-    const urlLower = url.toLowerCase()
-    return urlLower.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/) !== null || urlLower.includes('image')
-  } catch (error) {
-    console.error('Error checking image file:', error)
-    return false
-  }
+  const urlLower = url.toLowerCase()
+  return VIDEO_EXT_REGEX.test(urlLower) || urlLower.includes('video')
 }
 
 const VideoPreviewContent = memo(({
@@ -145,8 +116,8 @@ const VideoPreviewContent = memo(({
 }: {
   url: string
   isLoading: boolean
-  onLoad: () => void
-  onError: () => void
+  onLoad: (url: string) => void
+  onError: (url: string) => void
 }) => (
   <div className="relative w-full h-full">
     {isLoading && (
@@ -161,15 +132,14 @@ const VideoPreviewContent = memo(({
         isLoading && "opacity-50"
       )}
       controls={false}
-      onLoadedData={onLoad}
-      onError={onError}
+      onLoadedData={() => onLoad(url)}
+      onError={() => onError(url)}
     />
     <div className="absolute inset-0 flex items-center justify-center">
       <Play className="w-8 h-8 text-white/80" />
     </div>
   </div>
 ))
-
 VideoPreviewContent.displayName = 'VideoPreviewContent'
 
 const ImagePreviewContent = memo(({
@@ -180,8 +150,8 @@ const ImagePreviewContent = memo(({
 }: {
   url: string
   isLoading: boolean
-  onLoad: () => void
-  onError: () => void
+  onLoad: (url: string) => void
+  onError: (url: string) => void
 }) => (
   <>
     <Image
@@ -192,8 +162,8 @@ const ImagePreviewContent = memo(({
         "object-contain rounded-md",
         isLoading && "opacity-0"
       )}
-      onLoad={onLoad}
-      onError={onError}
+      onLoad={() => onLoad(url)}
+      onError={() => onError(url)}
       unoptimized
     />
     {isLoading && (
@@ -203,7 +173,6 @@ const ImagePreviewContent = memo(({
     )}
   </>
 ))
-
 ImagePreviewContent.displayName = 'ImagePreviewContent'
 
 const PreviewControls = memo(({
@@ -236,14 +205,17 @@ const PreviewControls = memo(({
       variant="ghost"
       size="icon"
       className="h-10 w-10 text-white hover:text-destructive hover:bg-white/20"
-      onClick={onDelete}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        onDelete(e)
+      }}
       type="button"
     >
       <Trash2 className="h-5 w-5" />
     </Button>
   </div>
 ))
-
 PreviewControls.displayName = 'PreviewControls'
 
 const FilePreview = memo(({
@@ -255,6 +227,8 @@ const FilePreview = memo(({
   onError
 }: FilePreviewProps) => {
   const isVideo = isVideoFile(url)
+  const handlePreviewClick = useCallback(() => onPreview(url), [onPreview, url])
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => onDelete(e), [onDelete])
 
   return (
     <div className="relative w-full h-full group">
@@ -263,40 +237,47 @@ const FilePreview = memo(({
           <VideoPreviewContent
             url={url}
             isLoading={isLoading}
-            onLoad={() => onLoad(url)}
-            onError={() => onError(url)}
+            onLoad={onLoad}
+            onError={onError}
           />
         ) : (
           <ImagePreviewContent
             url={url}
             isLoading={isLoading}
-            onLoad={() => onLoad(url)}
-            onError={() => onError(url)}
+            onLoad={onLoad}
+            onError={onError}
           />
         )}
       </div>
       <PreviewControls
         isVideo={isVideo}
-        onPreview={onPreview}
-        onDelete={onDelete}
+        onPreview={handlePreviewClick}
+        onDelete={handleDeleteClick}
       />
     </div>
   )
 })
-
 FilePreview.displayName = 'FilePreview'
 
 interface SortableItemProps {
-  id: string;
-  url: string;
-  isLoading: boolean;
-  onPreview: () => void;
-  onDelete: (e: React.MouseEvent) => void;
-  onLoad: (url: string) => void;
-  onError: (url: string) => void;
+  id: string
+  url: string
+  isLoading: boolean
+  onPreview: (url: string) => void
+  onDelete: (e: React.MouseEvent, url: string) => void
+  onLoad: (url: string) => void
+  onError: (url: string) => void
 }
 
-const SortableItem = memo(({ id, url, isLoading, onPreview, onDelete, onLoad, onError }: SortableItemProps) => {
+const SortableItem = memo(({
+  id,
+  url,
+  isLoading,
+  onPreview,
+  onDelete,
+  onLoad,
+  onError
+}: SortableItemProps) => {
   const {
     attributes,
     listeners,
@@ -306,10 +287,12 @@ const SortableItem = memo(({ id, url, isLoading, onPreview, onDelete, onLoad, on
     isDragging
   } = useSortable({
     id,
-    data: {
-      url
-    }
+    data: { url }
   })
+
+  const isVideo = isVideoFile(url)
+  const handlePreviewClick = useCallback(() => onPreview(url), [onPreview, url])
+  const handleDeleteClick = useCallback((e: React.MouseEvent) => onDelete(e, url), [onDelete, url])
 
   return (
     <div
@@ -321,10 +304,7 @@ const SortableItem = memo(({ id, url, isLoading, onPreview, onDelete, onLoad, on
         touchAction: 'none',
         opacity: isDragging ? 0.5 : 1,
       }}
-      className={cn(
-        "relative",
-        isDragging && "z-50"
-      )}
+      className={cn("relative", isDragging && "z-50")}
     >
       <div
         {...attributes}
@@ -341,62 +321,91 @@ const SortableItem = memo(({ id, url, isLoading, onPreview, onDelete, onLoad, on
       >
         <div className="relative w-full h-full group">
           <div className="relative w-full h-full">
-            {isVideoFile(url) ? (
+            {isVideo ? (
               <VideoPreviewContent
                 url={url}
                 isLoading={isLoading}
-                onLoad={() => onLoad(url)}
-                onError={() => onError(url)}
+                onLoad={onLoad}
+                onError={onError}
               />
             ) : (
               <ImagePreviewContent
                 url={url}
                 isLoading={isLoading}
-                onLoad={() => onLoad(url)}
-                onError={() => onError(url)}
+                onLoad={onLoad}
+                onError={onError}
               />
             )}
           </div>
-          <div
-            className="absolute inset-0 flex items-center justify-center gap-2 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10 text-white hover:text-primary hover:bg-white/20"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onPreview()
-              }}
-              type="button"
-            >
-              {isVideoFile(url) ? <Play className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="h-10 w-10 text-white hover:text-destructive hover:bg-white/20"
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                onDelete(e)
-              }}
-              type="button"
-            >
-              <Trash2 className="h-5 w-5" />
-            </Button>
-          </div>
+          <PreviewControls
+            isVideo={isVideo}
+            onPreview={handlePreviewClick}
+            onDelete={handleDeleteClick}
+          />
         </div>
       </div>
     </div>
   )
 })
-
 SortableItem.displayName = 'SortableItem'
 
-// 添加日志工函数
+// 提升到模块顶层，避免每次渲染重建组件类型导致 input/progress 反复卸载重挂载
+const UploadBox = memo(({
+  handleFile,
+  uploading,
+  uploadProgress,
+  accept,
+  maxSize
+}: {
+  handleFile: (file: File) => void
+  uploading: boolean
+  uploadProgress: number
+  accept: string
+  maxSize: number
+}) => (
+  <>
+    <input
+      type="file"
+      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+      accept={accept}
+      onChange={(e) => {
+        const file = e.target.files?.[0]
+        if (file) {
+          handleFile(file)
+        }
+        e.target.value = ''
+      }}
+      disabled={uploading}
+    />
+    <div className="flex flex-col items-center justify-center space-y-1">
+      <div className="w-8 h-8 flex items-center justify-center">
+        <Upload className={cn(
+          "w-5 h-5 text-muted-foreground",
+          uploading && "animate-bounce"
+        )} />
+      </div>
+      <div className="flex flex-col items-center space-y-0.5">
+        <p className="text-sm text-muted-foreground">
+          {uploading ? "正在上传..." : "上传文件"}
+        </p>
+        <p className="text-xs text-muted-foreground">
+          ({formatFileSize(maxSize)})
+        </p>
+      </div>
+      {uploading && (
+        <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
+          <Progress value={uploadProgress} className="h-1" />
+          <p className="text-xs text-muted-foreground mt-1 text-center">
+            {uploadProgress > 0 ? `${uploadProgress}%` : '准备上传...'}
+          </p>
+        </div>
+      )}
+    </div>
+  </>
+))
+UploadBox.displayName = 'UploadBox'
+
+// 日志工具函数
 const logger = {
   error: (...args: any[]) => {
     if (process.env.NODE_ENV !== 'production') {
@@ -420,7 +429,6 @@ export function FileUpload({
   onChange,
   accept,
   maxSize = 10 * 1024 * 1024,
-  placeholder = '点击或拖拽上传文件',
   preview = false,
   className,
   folder = 'common',
@@ -445,6 +453,9 @@ export function FileUpload({
     return value.split(',').filter(Boolean)
   })
 
+  const fileListRef = useRef(fileList)
+  fileListRef.current = fileList
+
   // 当外部 value 变化时更新 fileList
   useEffect(() => {
     if (value === '') {
@@ -463,20 +474,20 @@ export function FileUpload({
 
   // 更新 loadingStates 的副作用
   useEffect(() => {
-    if (!multipleRender) return
+    if (!multipleRender || !value) return
 
-    if (value) {
-      const urls = Array.isArray(value) ? value : [value]
-      setLoadingStates(prev => {
-        const newStates = { ...prev }
-        urls.forEach(url => {
-          if (!(url in newStates)) {
-            newStates[url] = false
-          }
-        })
-        return newStates
+    const urls = Array.isArray(value) ? value : [value]
+    setLoadingStates(prev => {
+      let changed = false
+      const newStates = { ...prev }
+      urls.forEach(url => {
+        if (!(url in newStates)) {
+          newStates[url] = false
+          changed = true
+        }
       })
-    }
+      return changed ? newStates : prev
+    })
   }, [value, multipleRender])
 
   const handleError = useCallback((error: unknown, context: string) => {
@@ -493,19 +504,16 @@ export function FileUpload({
     mediaType === 'video' ? ACCEPT_TYPES.video :
       ACCEPT_TYPES.image
 
-  // 使用传入的 accept 或默认值
   const acceptTypes = accept || defaultAccept
 
   const validateFile = useCallback((file: File): boolean => {
     if (maxSize && file.size > maxSize) {
-      const errorMsg = `文件大小不能超过 ${formatFileSize(maxSize)}`
-      setError(errorMsg)
+      setError(`文件大小不能超过 ${formatFileSize(maxSize)}`)
       return false
     }
 
     if (!isValidFileType(file, acceptTypes)) {
-      const errorMsg = `不支持的文件类型，支持的类型：${acceptTypes}`
-      setError(errorMsg)
+      setError(`不支持的文件类型，支持的类型：${acceptTypes}`)
       return false
     }
 
@@ -513,18 +521,34 @@ export function FileUpload({
   }, [maxSize, acceptTypes])
 
   const handleImageLoad = useCallback((url: string) => {
-    setLoadingStates(prev => ({
-      ...prev,
-      [url]: false
-    }))
+    setLoadingStates(prev => {
+      if (prev[url] === false) return prev
+      return { ...prev, [url]: false }
+    })
   }, [])
 
   const handleImageError = useCallback((url: string) => {
-    setLoadingStates(prev => ({
-      ...prev,
-      [url]: false
-    }))
+    setLoadingStates(prev => {
+      if (prev[url] === false) return prev
+      return { ...prev, [url]: false }
+    })
     logger.error(`图片加载失败: ${url}`)
+  }, [])
+
+  const handlePreview = useCallback((url: string) => {
+    setPreviewUrl(url)
+    setShowPreview(true)
+  }, [])
+
+  const handleDragStart = useCallback(() => {
+    document.body.style.cursor = 'grabbing'
+    if (window.navigator.vibrate) {
+      window.navigator.vibrate(50)
+    }
+  }, [])
+
+  const handleDragCancel = useCallback(() => {
+    document.body.style.cursor = ''
   }, [])
 
   const handleDragEnd = useCallback((event: DragEndEvent) => {
@@ -536,32 +560,26 @@ export function FileUpload({
     const { active, over } = event
     if (!over || active.id === over.id) return
 
-    // 先计算新的列表
-    const oldIndex = fileList.findIndex(url => url === active.id)
-    const newIndex = fileList.findIndex(url => url === over.id)
+    const currentList = fileListRef.current
+    const oldIndex = currentList.findIndex(url => url === active.id)
+    const newIndex = currentList.findIndex(url => url === over.id)
 
     if (oldIndex === -1 || newIndex === -1) return
 
-    // 生成新的列表
-    const newList = arrayMove([...fileList], oldIndex, newIndex)
-
-    // 先触发 onChange
-    onChange?.(newList.join(','))
-
-    // 再更新内部状态
+    const newList = arrayMove(currentList, oldIndex, newIndex)
     setFileList(newList)
-  }, [onChange, fileList])
+    onChange?.(newList.join(','))
+  }, [onChange])
 
+  // 避免在 setState updater 内部调用外部 onChange
   const handleDelete = useCallback((e: React.MouseEvent, url?: string) => {
     e.preventDefault()
     e.stopPropagation()
 
     if (url) {
-      setFileList(prev => {
-        const newList = prev.filter(item => item !== url)
-        onChange?.(newList.join(','))
-        return newList
-      })
+      const newList = fileListRef.current.filter(item => item !== url)
+      setFileList(newList)
+      onChange?.(newList.join(','))
     } else {
       setFileList([])
       onChange?.('')
@@ -590,11 +608,9 @@ export function FileUpload({
         [url]: false
       }))
 
-      setFileList(prev => {
-        const newList = multipleRender ? [...prev, url] : [url]
-        onChange?.(newList.join(','))
-        return newList
-      })
+      const newList = multipleRender ? [...fileListRef.current, url] : [url]
+      setFileList(newList)
+      onChange?.(newList.join(','))
     } catch (err) {
       handleError(err, '上传失败')
     } finally {
@@ -604,7 +620,6 @@ export function FileUpload({
     }
   }, [validateFile, folder, multipleRender, onChange, onUploading, onProgress, handleError])
 
-  // 将 sensors 移到组件顶层，避免 React Hook 规则问题
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -619,195 +634,111 @@ export function FileUpload({
     })
   )
 
-  const renderContent = () => {
-    if (multipleRender) {
-
-      return (
-        <div className="flex flex-wrap gap-4">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={() => {
-              document.body.style.cursor = 'grabbing'
-              if (window.navigator.vibrate) {
-                window.navigator.vibrate(50)
-              }
-            }}
-            onDragEnd={handleDragEnd}
-            onDragCancel={() => {
-              document.body.style.cursor = ''
-            }}
-          >
-            <SortableContext
-              items={fileList}
-              strategy={rectSortingStrategy}
-            >
-              {fileList.map((url) => (
-                <SortableItem
-                  key={url}
-                  id={url}
-                  url={url}
-                  isLoading={loadingStates[url]}
-                  onPreview={() => {
-                    setPreviewUrl(url)
-                    setShowPreview(true)
-                  }}
-                  onDelete={(e) => handleDelete(e, url)}
-                  onLoad={handleImageLoad}
-                  onError={handleImageError}
-                />
-              ))}
-            </SortableContext>
-          </DndContext>
-
-          {fileList.length < maxLength && (
-            <div className="relative">
-              <div
-                className={cn(
-                  "relative flex flex-col items-center justify-center border border-dashed rounded-md",
-                  "w-[120px] h-[120px]",
-                  "transition-all duration-200 ease-in-out",
-                  "hover:border-primary hover:bg-background/80",
-                  isDragging && "border-primary bg-background/80",
-                  error && "border-destructive",
-                  uploading && "pointer-events-none opacity-70",
-                  "p-0"
-                )}
-                onDragOver={(e) => {
-                  e.preventDefault()
-                  setIsDragging(true)
-                }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={(e) => {
-                  e.preventDefault()
-                  setIsDragging(false)
-                  const file = e.dataTransfer.files[0]
-                  if (file) handleFile(file)
-                }}
-              >
-                <UploadBox
-                  isDragging={isDragging}
-                  setIsDragging={setIsDragging}
-                  handleFile={handleFile}
-                  uploading={uploading}
-                  uploadProgress={uploadProgress}
-                  error={error}
-                  accept={acceptTypes}
-                />
-              </div>
-            </div>
-          )}
-        </div>
-      )
-    }
-
-    return (
-      <div className="relative w-full">
-        <div
-          className={cn(
-            "relative flex flex-col items-center justify-center border border-dashed rounded-md",
-            "w-[120px] h-[120px]",
-            "transition-all duration-200 ease-in-out",
-            "hover:border-primary hover:bg-background/80",
-            isDragging && "border-primary bg-background/80",
-            error && "border-destructive",
-            !error && value && "border-primary/50",
-            uploading && "pointer-events-none opacity-70",
-            "p-0",
-            className
-          )}
-        >
-          {value && preview ? (
-            <FilePreview
-              url={value as string}
-              isLoading={loadingStates[value as string]}
-              onPreview={() => {
-                setPreviewUrl(value as string)
-                setShowPreview(true)
-              }}
-              onDelete={handleDelete}
-              onLoad={handleImageLoad}
-              onError={handleImageError}
-            />
-          ) : (
-            <UploadBox
-              isDragging={isDragging}
-              setIsDragging={setIsDragging}
-              handleFile={handleFile}
-              uploading={uploading}
-              uploadProgress={uploadProgress}
-              error={error}
-              accept={acceptTypes}
-            />
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  const UploadBox = memo(({
-    isDragging,
-    setIsDragging,
-    handleFile,
-    uploading,
-    uploadProgress,
-    error,
-    accept
-  }: {
-    isDragging: boolean
-    setIsDragging: (isDragging: boolean) => void
-    handleFile: (file: File) => void
-    uploading: boolean
-    uploadProgress: number
-    error: string | undefined
-    accept: string
-  }) => (
-    <>
-      <input
-        type="file"
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-        accept={accept}
-        onChange={(e) => {
-          const file = e.target.files?.[0]
-          if (file) {
-            handleFile(file)
-          }
-        }}
-        disabled={uploading}
-      />
-      <div className="flex flex-col items-center justify-center space-y-1">
-        <div className="w-8 h-8 flex items-center justify-center">
-          <Upload className={cn(
-            "w-5 h-5 text-muted-foreground",
-            uploading && "animate-bounce"
-          )} />
-        </div>
-        <div className="flex flex-col items-center space-y-0.5">
-          <p className="text-sm text-muted-foreground">
-            {uploading ? "正在上传..." : "上传文件"}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            ({formatFileSize(maxSize)})
-          </p>
-        </div>
-        {uploading && (
-          <div className="absolute bottom-0 left-0 right-0 px-2 pb-2">
-            <Progress value={uploadProgress} className="h-1" />
-            <p className="text-xs text-muted-foreground mt-1 text-center">
-              {uploadProgress > 0 ? `${uploadProgress}%` : '准备上传...'}
-            </p>
-          </div>
-        )}
-      </div>
-    </>
-  ))
-
-  UploadBox.displayName = 'UploadBox'
-
   return (
     <>
       <div className="w-full">
-        {renderContent()}
+        {multipleRender ? (
+          <div className="flex flex-wrap gap-4">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+              onDragCancel={handleDragCancel}
+            >
+              <SortableContext
+                items={fileList}
+                strategy={rectSortingStrategy}
+              >
+                {fileList.map((url) => (
+                  <SortableItem
+                    key={url}
+                    id={url}
+                    url={url}
+                    isLoading={Boolean(loadingStates[url])}
+                    onPreview={handlePreview}
+                    onDelete={handleDelete}
+                    onLoad={handleImageLoad}
+                    onError={handleImageError}
+                  />
+                ))}
+              </SortableContext>
+            </DndContext>
+
+            {fileList.length < maxLength && (
+              <div className="relative">
+                <div
+                  className={cn(
+                    "relative flex flex-col items-center justify-center border border-dashed rounded-md",
+                    "w-[120px] h-[120px]",
+                    "transition-all duration-200 ease-in-out",
+                    "hover:border-primary hover:bg-background/80",
+                    isDragging && "border-primary bg-background/80",
+                    error && "border-destructive",
+                    uploading && "pointer-events-none opacity-70",
+                    "p-0"
+                  )}
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                    setIsDragging(true)
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault()
+                    setIsDragging(false)
+                    const file = e.dataTransfer.files[0]
+                    if (file) handleFile(file)
+                  }}
+                >
+                  <UploadBox
+                    handleFile={handleFile}
+                    uploading={uploading}
+                    uploadProgress={uploadProgress}
+                    accept={acceptTypes}
+                    maxSize={maxSize}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="relative w-full">
+            <div
+              className={cn(
+                "relative flex flex-col items-center justify-center border border-dashed rounded-md",
+                "w-[120px] h-[120px]",
+                "transition-all duration-200 ease-in-out",
+                "hover:border-primary hover:bg-background/80",
+                isDragging && "border-primary bg-background/80",
+                error && "border-destructive",
+                !error && value && "border-primary/50",
+                uploading && "pointer-events-none opacity-70",
+                "p-0",
+                className
+              )}
+            >
+              {value && preview ? (
+                <FilePreview
+                  url={value as string}
+                  isLoading={Boolean(loadingStates[value as string])}
+                  onPreview={handlePreview}
+                  onDelete={handleDelete}
+                  onLoad={handleImageLoad}
+                  onError={handleImageError}
+                />
+              ) : (
+                <UploadBox
+                  handleFile={handleFile}
+                  uploading={uploading}
+                  uploadProgress={uploadProgress}
+                  accept={acceptTypes}
+                  maxSize={maxSize}
+                />
+              )}
+            </div>
+          </div>
+        )}
+
         {error && !hideError && (
           <p className="text-sm text-destructive font-medium absolute -bottom-4 left-0">{error}</p>
         )}
@@ -830,4 +761,4 @@ export function FileUpload({
       )}
     </>
   )
-} 
+}

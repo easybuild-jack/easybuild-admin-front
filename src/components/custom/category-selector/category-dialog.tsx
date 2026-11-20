@@ -1,11 +1,17 @@
 'use client'
 
-import { Dialog,DialogContent,DialogHeader,DialogTitle } from "@/components/ui/dialog"
+import { memo, useCallback } from "react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { MultiSelect } from "@/components/custom/multi-select"
 import type { CategoryDialogProps } from "./types"
 
-export function CategoryDialog({
+const SELECT_POPOVER_PROPS = {
+    align: 'start',
+    className: 'w-full'
+} as const
+
+export const CategoryDialog = memo(function CategoryDialog({
     open,
     onOpenChange,
     value,
@@ -19,6 +25,20 @@ export function CategoryDialog({
 }: CategoryDialogProps) {
     const showSecondLevel = maxLevel >= 2
     const showThirdLevel = maxLevel >= 3
+
+    const handleFirstSearch = useCallback(
+        (keyword: string) => onCategorySearch(keyword, 'first'),
+        [onCategorySearch]
+    )
+    const handleSecondSearch = useCallback(
+        (keyword: string) => onCategorySearch(keyword, 'second'),
+        [onCategorySearch]
+    )
+    const handleThirdSearch = useCallback(
+        (keyword: string) => onCategorySearch(keyword, 'third'),
+        [onCategorySearch]
+    )
+    const handleCancel = useCallback(() => onOpenChange(false), [onOpenChange])
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -35,11 +55,8 @@ export function CategoryDialog({
                             options={options.first}
                             placeholder="选择一级分类"
                             multiple={false}
-                            popoverProps={{
-                                align: 'start',
-                                className: 'w-full'
-                            }}
-                            onSearch={(keyword) => onCategorySearch(keyword, 'first')}
+                            popoverProps={SELECT_POPOVER_PROPS}
+                            onSearch={handleFirstSearch}
                             searchDebounce={800}
                         />
                     </div>
@@ -54,11 +71,8 @@ export function CategoryDialog({
                                 placeholder={value.firstCategoryId ? "选择二级分类" : "请先选择一级分类"}
                                 multiple={false}
                                 disabled={!value.firstCategoryId}
-                                popoverProps={{
-                                    align: 'start',
-                                    className: 'w-full'
-                                }}
-                                onSearch={(keyword) => onCategorySearch(keyword, 'second')}
+                                popoverProps={SELECT_POPOVER_PROPS}
+                                onSearch={handleSecondSearch}
                                 searchDebounce={800}
                             />
                         </div>
@@ -74,11 +88,8 @@ export function CategoryDialog({
                                 placeholder={value.secondCategoryId ? "选择三级分类" : "请先选择二级分类"}
                                 multiple={false}
                                 disabled={!value.secondCategoryId}
-                                popoverProps={{
-                                    align: 'start',
-                                    className: 'w-full'
-                                }}
-                                onSearch={(keyword) => onCategorySearch(keyword, 'third')}
+                                popoverProps={SELECT_POPOVER_PROPS}
+                                onSearch={handleThirdSearch}
                                 searchDebounce={800}
                             />
                         </div>
@@ -86,7 +97,7 @@ export function CategoryDialog({
                 </div>
 
                 <div className="flex justify-end gap-2">
-                    <Button variant="outline" onClick={() => onOpenChange(false)}>
+                    <Button variant="outline" onClick={handleCancel}>
                         取消
                     </Button>
                     <Button onClick={onConfirm}>
@@ -96,4 +107,4 @@ export function CategoryDialog({
             </DialogContent>
         </Dialog>
     )
-}
+})

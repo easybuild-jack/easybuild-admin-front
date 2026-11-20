@@ -1,10 +1,10 @@
 "use client"
 
 import * as React from "react"
-import { Popover,PopoverContent,PopoverTrigger } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { Check,ChevronsUpDown,X,Search } from "lucide-react"
+import { Check, ChevronsUpDown, X, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface Option {
@@ -41,23 +41,47 @@ export function MultiSelect({
   const [searchQuery, setSearchQuery] = React.useState("")
   const [loading, setLoading] = React.useState(false)
   const [options, setOptions] = React.useState(initialOptions)
-  const lastSearchRef = React.useRef("")
-  const isHandlingSelectRef = React.useRef(false)
 
-  const debouncedSearch = React.useCallback(
-    debounce(async (value: string) => {
-      if (!onSearch || value === lastSearchRef.current) return
-      lastSearchRef.current = value
+  const lastSearchRef = React.useRef("")
+  const onSearchRef = React.useRef(onSearch)
+  onSearchRef.current = onSearch
+  const debounceTimerRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const requestIdRef = React.useRef(0)
+
+  // 卸载时清理防抖定时器，防止内存泄漏与状态更新警告
+  React.useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
+      }
+    }
+  }, [])
+
+  const triggerSearch = React.useCallback((keyword: string) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current)
+    }
+
+    if (!onSearchRef.current) return
+
+    debounceTimerRef.current = setTimeout(async () => {
+      const searchFn = onSearchRef.current
+      if (!searchFn || keyword === lastSearchRef.current) return
+      lastSearchRef.current = keyword
+      const currentRequestId = ++requestIdRef.current
       setLoading(true)
       try {
-        const results = await onSearch(value)
-        setOptions(results)
+        const results = await searchFn(keyword)
+        if (currentRequestId === requestIdRef.current) {
+          setOptions(results)
+        }
       } finally {
-        setLoading(false)
+        if (currentRequestId === requestIdRef.current) {
+          setLoading(false)
+        }
       }
-    }, searchDebounce),
-    [onSearch, searchDebounce]
-  )
+    }, searchDebounce)
+  }, [searchDebounce])
 
   const normalizedValue = React.useMemo(() => {
     if (!value) return []
@@ -65,10 +89,15 @@ export function MultiSelect({
     return multiple ? String(value).split(',').filter(Boolean) : [String(value)]
   }, [value, multiple])
 
-  const selectedOptions = React.useMemo(() =>
-    options.filter(option =>
-      normalizedValue.includes(String(option.value))
-    ), [options, normalizedValue]
+  // O(1) 查找集合，替代 O(N * M) 的 includes 扫描
+  const selectedValueSet = React.useMemo(
+    () => new Set(normalizedValue),
+    [normalizedValue]
+  )
+
+  const selectedOptions = React.useMemo(
+    () => options.filter(option => selectedValueSet.has(String(option.value))),
+    [options, selectedValueSet]
   )
 
   // 更新选项列表
@@ -77,7 +106,7 @@ export function MultiSelect({
   }, [initialOptions])
 
   const handleSelect = React.useCallback((currentValue: string) => {
-    const isSelected = normalizedValue.includes(currentValue)
+    const isSelected = selectedValueSet.has(currentValue)
 
     if (multiple) {
       const newValues = isSelected
@@ -85,17 +114,15 @@ export function MultiSelect({
         : [...normalizedValue, currentValue]
       onChange(newValues.join(','))
     } else {
-      // 如果值没有变化，不触发 onChange
-      if (value === currentValue) {
+      if (String(value) === currentValue) {
         setOpen(false)
         return
       }
 
-      // 直接触发 onChange，不使用 requestAnimationFrame
       onChange(currentValue)
       setOpen(false)
     }
-  }, [normalizedValue, onChange, multiple, value])
+  }, [selectedValueSet, normalizedValue, onChange, multiple, value])
 
   const handleRemove = React.useCallback((optionValue: Option['value'], e: React.MouseEvent) => {
     e.preventDefault()
@@ -106,14 +133,20 @@ export function MultiSelect({
       return
     }
 
-    const newValues = normalizedValue.filter(v => v !== String(optionValue))
+    const target = String(optionValue)
+    const newValues = normalizedValue.filter(v => v !== target)
     onChange(newValues.join(','))
   }, [multiple, normalizedValue, onChange])
 
-  // 处理弹窗状态变化
   const handleOpenChange = React.useCallback((nextOpen: boolean) => {
     setOpen(nextOpen)
   }, [])
+
+  const handleSearchInputChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const nextVal = e.target.value
+    setSearchQuery(nextVal)
+    triggerSearch(nextVal)
+  }, [triggerSearch])
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
@@ -165,11 +198,7 @@ export function MultiSelect({
             <Search className="h-4 w-4 shrink-0 opacity-50" />
             <input
               value={searchQuery}
-              onChange={(e) => {
-                const value = e.target.value
-                setSearchQuery(value)
-                debouncedSearch(value)
-              }}
+              onChange={handleSearchInputChange}
               placeholder={`搜索${placeholder}`}
               className="flex h-10 w-full rounded-md bg-transparent py-3 pl-2 text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
             />
@@ -177,16 +206,16 @@ export function MultiSelect({
           <div
             className="max-h-[300px] overflow-auto scrollbar-custom"
             onWheel={(e) => {
-              e.stopPropagation();
-              const target = e.currentTarget;
+              e.stopPropagation()
+              const target = e.currentTarget
               if (target) {
-                target.scrollTop += e.deltaY;
+                target.scrollTop += e.deltaY
               }
             }}
           >
             {loading ? (
               <div className="flex items-center justify-center py-4">
-                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
               </div>
             ) : options.length === 0 ? (
               <div className="relative flex select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none text-muted-foreground">
@@ -194,12 +223,13 @@ export function MultiSelect({
               </div>
             ) : (
               options.map((option) => {
-                const isSelected = normalizedValue.includes(String(option.value))
+                const optionValueStr = String(option.value)
+                const isSelected = selectedValueSet.has(optionValueStr)
                 return (
                   <div
                     key={option.value}
                     className="relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-accent hover:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
-                    onClick={() => handleSelect(String(option.value))}
+                    onClick={() => handleSelect(optionValueStr)}
                   >
                     <div className={cn(
                       "flex h-4 w-4 items-center justify-center rounded-sm mr-2",
@@ -227,20 +257,3 @@ export function MultiSelect({
     </Popover>
   )
 }
-
-function debounce<T extends (...args: any[]) => any>(
-  fn: T,
-  delay: number
-): (...args: Parameters<T>) => void {
-  let timeoutId: NodeJS.Timeout | undefined
-
-  return (...args: Parameters<T>) => {
-    if (timeoutId) {
-      clearTimeout(timeoutId)
-    }
-
-    timeoutId = setTimeout(() => {
-      fn(...args)
-    }, delay)
-  }
-} 

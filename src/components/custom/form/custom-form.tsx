@@ -6,31 +6,42 @@ import { Form as UIForm } from "@/components/ui/form"
 import { Layout } from './layout'
 import { Field } from './field'
 import { cn } from "@/lib/utils"
-import type { CustomFormProps,CustomFormRef } from './types'
+import type { CustomFormProps, CustomFormRef, FormField } from './types'
 
 // 处理字段值的函数
 const processFieldValue = (value: any, type?: string) => {
-  // 如果值为null或undefined，根据字段类型返回默认值
   if (value === null || value === undefined) {
     return type === 'number' ? 0 : ''
   }
 
-  // 只在特定场景下进行类型转换
   if (type === 'number' && typeof value !== 'number') {
     return Number(value)
   }
 
-  // 其他情况保持原始值
   return value
 }
 
 export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((props, ref) => {
   const [isInitializing, setIsInitializing] = React.useState(false)
   const isFirstMount = React.useRef(true)
-  const lastInitialDataRef = React.useRef(props.initialData)
+  const lastInitialDataJsonRef = React.useRef<string | undefined>(undefined)
   const formContainerRef = React.useRef<HTMLDivElement>(null)
 
-  const [updatingFields, setUpdatingFields] = React.useState<Set<string>>(new Set())
+  const [updatingFields, setUpdatingFields] = React.useState<Set<string>>(() => new Set())
+
+  // O(1) 字段配置映射，替代循环内 fields.find
+  const fieldMap = React.useMemo(() => {
+    const map = new Map<string, FormField>()
+    for (const f of props.fields) {
+      map.set(f.name, f)
+    }
+    return map
+  }, [props.fields])
+
+  const watchFieldsSet = React.useMemo(
+    () => (props.watchFields && props.watchFields.length > 0 ? new Set(props.watchFields) : null),
+    [props.watchFields]
+  )
 
   // @ts-ignore - Zod resolver type compatibility issue between versions
   const form = useForm<any>({
@@ -47,16 +58,10 @@ export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((prop
     reset: () => form.reset(props.defaultValues)
   }), [form, props.defaultValues])
 
-  const triggerFieldUpdate = React.useCallback((fieldNames: string[]) => {
-    setUpdatingFields(prev => {
-      const next = new Set(prev)
-      fieldNames.forEach(name => next.add(name))
-      return next
-    })
-  }, [])
-
+  // 仅在集合确实包含该字段时才返回新 Set，避免挂载阶段每个 Field 触发一次全表单重渲染
   const handleFieldRendered = React.useCallback((fieldName: string) => {
     setUpdatingFields(prev => {
+      if (!prev.has(fieldName)) return prev
       const next = new Set(prev)
       next.delete(fieldName)
       return next
@@ -78,10 +83,10 @@ export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((prop
   React.useEffect(() => {
     if (!props.onChange) return
 
-    if (props.watchFields && props.watchFields.length > 0) {
-      const subscription = form.watch((value, { name, type }) => {
-        if (name && props.watchFields && props.watchFields.includes(name)) {
-          const field = props.fields.find(f => f.name === name)
+    if (watchFieldsSet) {
+      const subscription = form.watch((value, { name }) => {
+        if (name && watchFieldsSet.has(name)) {
+          const field = fieldMap.get(name)
           const processedValue = processFieldValue(value[name], field?.type)
           props.onChange?.({ [name]: processedValue })
         }
@@ -92,21 +97,24 @@ export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((prop
 
     if (props.watchAll) {
       const subscription = form.watch((value) => {
-        const processedValue = Object.entries(value).reduce((acc, [key, val]) => {
-          const field = props.fields.find(f => f.name === key)
-          acc[key] = processFieldValue(val, field?.type)
-          return acc
-        }, {} as Record<string, any>)
+        const processedValue: Record<string, any> = {}
+        for (const [key, val] of Object.entries(value)) {
+          const field = fieldMap.get(key)
+          processedValue[key] = processFieldValue(val, field?.type)
+        }
         props.onChange?.(processedValue)
       })
 
       return () => subscription.unsubscribe()
     }
-  }, [form, props.onChange, props.watchFields, props.watchAll, props.fields])
+  }, [form, props.onChange, watchFieldsSet, props.watchAll, fieldMap])
+
+  const fieldMapRef = React.useRef(fieldMap)
+  fieldMapRef.current = fieldMap
 
   React.useEffect(() => {
-    if (!isFirstMount.current &&
-      JSON.stringify(lastInitialDataRef.current) === JSON.stringify(props.initialData)) {
+    const nextJson = JSON.stringify(props.initialData)
+    if (!isFirstMount.current && lastInitialDataJsonRef.current === nextJson) {
       return
     }
 
@@ -114,14 +122,16 @@ export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((prop
       try {
         setIsInitializing(true)
         const initialValues = props.initialData || props.defaultValues
-        const processedValues = Object.entries(initialValues || {}).reduce((acc, [key, value]) => {
-          const field = props.fields.find(f => f.name === key)
-          acc[key] = processFieldValue(value, field?.type)
-          return acc
-        }, {} as Record<string, any>)
+        const processedValues: Record<string, any> = {}
+        if (initialValues) {
+          for (const [key, value] of Object.entries(initialValues)) {
+            const field = fieldMapRef.current.get(key)
+            processedValues[key] = processFieldValue(value, field?.type)
+          }
+        }
 
         await form.reset(processedValues)
-        lastInitialDataRef.current = props.initialData
+        lastInitialDataJsonRef.current = nextJson
         props.onInitialized?.()
       } catch (error) {
         if (props.onError) {
@@ -136,32 +146,12 @@ export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((prop
     }
 
     initializeForm()
-  }, [props.initialData, form, props.defaultValues, props.onInitialized, props.onError, props.fields])
+  }, [props.initialData, form, props.defaultValues, props.onInitialized, props.onError])
 
   usePreventAutofocus()
 
-  const renderField = React.useCallback((field: any) => {
-    const shouldUpdate = updatingFields.has(field.name)
-
-    return (
-      <Field
-        key={field.name}
-        field={field}
-        form={form}
-        error={form.formState.errors[field.name]?.message as string}
-        disabled={props.disabled || props.loading || isInitializing}
-        onRendered={handleFieldRendered}
-        forceUpdate={shouldUpdate}
-      />
-    )
-  }, [
-    form,
-    props.disabled,
-    props.loading,
-    isInitializing,
-    updatingFields,
-    handleFieldRendered
-  ])
+  const isDisabled = Boolean(props.disabled || props.loading || isInitializing)
+  const errors = form.formState.errors
 
   return (
     <div className="relative" ref={formContainerRef}>
@@ -178,7 +168,17 @@ export const CustomForm = React.forwardRef<CustomFormRef, CustomFormProps>((prop
           autoComplete={props.autoComplete || "off"}
         >
           <Layout {...props.layout}>
-            {props.fields.map(renderField)}
+            {props.fields.map((field) => (
+              <Field
+                key={field.name}
+                field={field}
+                form={form}
+                error={errors[field.name]?.message as string}
+                disabled={isDisabled}
+                onRendered={handleFieldRendered}
+                forceUpdate={updatingFields.has(field.name)}
+              />
+            ))}
           </Layout>
         </form>
       </UIForm>
