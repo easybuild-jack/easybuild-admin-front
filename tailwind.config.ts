@@ -6,6 +6,31 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			sans: [
+  				'var(--font-display)',
+  				'var(--font-sans-sc)',
+  				'-apple-system',
+  				'BlinkMacSystemFont',
+  				'"PingFang SC"',
+  				'"Microsoft YaHei"',
+  				'sans-serif'
+  			],
+  			display: [
+  				'var(--font-display)',
+  				'var(--font-sans-sc)',
+  				'sans-serif'
+  			],
+  			mono: [
+  				'var(--font-mono)',
+  				'ui-monospace',
+  				'SFMono-Regular',
+  				'Menlo',
+  				'Monaco',
+  				'Consolas',
+  				'monospace'
+  			]
+  		},
   		colors: {
   			border: 'hsl(var(--border))',
   			background: 'hsl(var(--background))',
