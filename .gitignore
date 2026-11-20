@@ -177,10 +177,14 @@ storybook-static
 *.tsbuildinfo
 next-env.d.ts
 .yarn
-yarn.lock
 package-lock.json
 .node_modules
 .next/
 .claude/
 .agent/
 docs/
+
+# 注意：yarn.lock 必须纳入版本控制，保证依赖版本可复现，不要加回此文件
+
+# WorkBuddy 本地数据（项目记忆、缓存等）
+.workbuddy/
