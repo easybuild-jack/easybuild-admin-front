@@ -5,9 +5,9 @@ import { CustomDialog } from "@/components/custom/custom-dialog"
 import { CustomForm } from "@/components/custom/form/custom-form"
 import { Button } from "@/components/ui/button"
 import type { Dict } from "@/types/dict"
-import { DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { DialogTitle,DialogDescription } from "@/components/ui/dialog"
 import type { FormField } from "@/components/custom/form/types"
-import { useState, useEffect } from "react"
+import { useState,useEffect } from "react"
 import { BookOpen } from "lucide-react"
 
 // 保持原有的表单验证schema

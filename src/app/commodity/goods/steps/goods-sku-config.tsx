@@ -1,18 +1,18 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState,useEffect } from "react"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+Table,
+TableBody,
+TableCell,
+TableHead,
+TableHeader,
+TableRow,
 } from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
-import type { GoodsItem, GoodsSku } from "@/types/goods"
+import type { GoodsItem,GoodsSku } from "@/types/goods"
 import { FileUpload } from "@/components/custom/file-upload"
 import { cn } from "@/lib/utils"
 import { editSku } from "@/api/goods"

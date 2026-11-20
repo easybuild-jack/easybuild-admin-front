@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef } from "react"
+import { useState,useEffect,useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Check, ChevronRight } from "lucide-react"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { Check } from "lucide-react"
+import { DialogTitle } from "@/components/ui/dialog"
 import { VisuallyHidden } from "@/components/ui/visually-hidden"
 import { cn } from "@/lib/utils"
 import { GoodsBasicInfo } from "./steps/goods-basic-info"
@@ -12,9 +12,9 @@ import { GoodsSkuConfig } from "./steps/goods-sku-config"
 import { GoodsDescription } from "./steps/goods-description"
 import { GoodsDetail } from "./steps/goods-detail"
 import type { GoodsItem } from "@/types/goods"
-import { getDetail, editBasic, editSpu, editSku, editExplain, editDetail } from '@/api/goods'
+import { getDetail,editBasic,editSpu,editSku,editExplain,editDetail } from '@/api/goods'
 import { CustomDialog } from "@/components/custom/custom-dialog"
-import { Package2, Layers, Boxes, ScrollText, Image as ImageIcon, Package } from "lucide-react"
+import { Package2,Layers,Boxes,ScrollText,Image as ImageIcon,Package } from "lucide-react"
 
 const iconMap: { [key: string]: any } = {
   Package2,

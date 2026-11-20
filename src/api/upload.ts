@@ -1,4 +1,3 @@
-import { http } from './http'
 import { UPLOAD_API_URL } from '@/config/api-url'
 
 interface UploadApiResponse {

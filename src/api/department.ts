@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-  DepartmentQueryParams,
-  DepartmentSaveParams,
+DepartmentQueryParams,
+DepartmentSaveParams,
 } from '@/types/department'
 
 // 获取部门列表

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server'
-import type { MockMethod, MockRouteMap } from './types'
+import { NextRequest,NextResponse } from 'next/server'
+import type { MockMethod,MockRouteMap } from './types'
 import { mockError } from './utils'
 import { authRoutes } from './modules/auth/auth'
 import { departmentRoutes } from './modules/auth/department'

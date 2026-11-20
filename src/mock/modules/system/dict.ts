@@ -1,14 +1,14 @@
 import { API_URLS } from '@/config/api-url'
 import type { MockRouteMap } from '@/mock/types'
 import {
-  checkMockAuth,
-  formatNow,
-  mockError,
-  mockSuccess,
-  paginate,
-  parseIdList,
+checkMockAuth,
+formatNow,
+mockError,
+mockSuccess,
+paginate,
+parseIdList,
 } from '@/mock/utils'
-import { getSystemMockStore, nextSystemMockId } from './data'
+import { getSystemMockStore,nextSystemMockId } from './data'
 
 export const dictRoutes: MockRouteMap = {
   // ===== 字典主表 =====

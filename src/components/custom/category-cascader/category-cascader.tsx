@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef, useMemo } from "react"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useState,useEffect,useCallback,useRef,useMemo } from "react"
+import { Popover,PopoverContent,PopoverTrigger } from "@/components/ui/popover"
 import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import { cn } from "@/lib/utils"
-import { ChevronsUpDown, X, Search, ChevronRight, Loader2 } from "lucide-react"
+import { ChevronsUpDown,X,Search,ChevronRight,Loader2 } from "lucide-react"
 import { getCategoryDropdownList } from "@/api/category"
-import type { CategoryCascaderProps, CategoryCascaderValue, CategoryCascaderOption } from "./types"
+import type { CategoryCascaderProps,CategoryCascaderValue,CategoryCascaderOption } from "./types"
 
 export function CategoryCascader({
     value = {},

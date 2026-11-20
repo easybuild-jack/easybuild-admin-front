@@ -7,11 +7,10 @@ import { Button } from "@/components/ui/button"
 import type { Employee } from "@/types/employee"
 import { DialogTitle } from "@/components/ui/dialog"
 import type { FormField } from "@/components/custom/form/types"
-import { useState, useEffect } from "react"
-import { showMessage, showError } from "@/components/custom/notifications"
+import { useState,useEffect } from "react"
+import { showMessage,showError } from "@/components/custom/notifications"
 import { updateEmployeePassword } from "@/api/employee"
-import CryptoJS from 'crypto-js'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye,EyeOff } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 

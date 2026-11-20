@@ -1,29 +1,29 @@
 'use client'
 
-import { useState, useEffect, useCallback, memo, useMemo, useRef } from 'react'
+import { useState,useEffect,useCallback,memo } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '../ui/button'
-import { Upload, X, Eye, Trash2, Play } from 'lucide-react'
+import { Upload,Eye,Trash2,Play } from 'lucide-react'
 import Image from 'next/image'
 import { uploadApi } from '@/api/upload'
 import { ImagePreview } from "../ui/image-preview"
 import { VideoPreview } from "../ui/video-preview"
 import { Progress } from "@/components/ui/progress"
 import {
-  DndContext,
-  closestCenter,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  DragEndEvent
+DndContext,
+closestCenter,
+KeyboardSensor,
+PointerSensor,
+useSensor,
+useSensors,
+DragEndEvent
 } from '@dnd-kit/core'
 import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  rectSortingStrategy
+arrayMove,
+SortableContext,
+sortableKeyboardCoordinates,
+useSortable,
+rectSortingStrategy
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 

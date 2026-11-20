@@ -5,9 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { Form as UIForm } from "@/components/ui/form"
 import { Layout } from './layout'
 import { Field } from './field'
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { cn } from "@/lib/utils"
-import type { CustomFormProps, CustomFormRef } from './types'
+import type { CustomFormProps,CustomFormRef } from './types'
 
 // 处理字段值的函数
 const processFieldValue = (value: any, type?: string) => {

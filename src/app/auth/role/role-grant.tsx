@@ -1,15 +1,15 @@
 'use client'
 
-import { useEffect, useState, useCallback } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { useEffect,useState,useCallback } from "react"
+import { Dialog,DialogContent,DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import type { Role } from "@/types/role"
-import { showMessage, showError, showWarning } from "@/components/custom/notifications"
+import { showMessage,showError,showWarning } from "@/components/custom/notifications"
 import { cn } from "@/lib/utils"
-import { Search, X, ChevronDown, ChevronRight } from "lucide-react"
+import { Search,X,ChevronDown } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { getRoleResources, saveRoleResources } from "@/api/role"
+import { getRoleResources,saveRoleResources } from "@/api/role"
 
 // 修改接口数据类型定义
 interface ResourceItem {

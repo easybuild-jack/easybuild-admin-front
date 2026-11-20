@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form"
+import { Form,FormControl,FormField,FormItem,FormLabel } from "@/components/ui/form"
 import { RichEditor } from "@/components/ui/rich-editor"
 import type { GoodsItem } from "@/types/goods"
 import { showMessage } from "@/components/custom/notifications"

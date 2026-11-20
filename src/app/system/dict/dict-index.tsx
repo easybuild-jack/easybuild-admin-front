@@ -3,24 +3,16 @@
 import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import type { TableColumn } from "@/components/custom/table"
-import { Plus, Search, RotateCw, MoreHorizontal, Eye, Edit, Trash2 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Plus,Search,RotateCw,Eye,Edit,Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { useState, useEffect, useCallback } from "react"
-import { getDictList, saveDict, toggleDictForbiddenFlag, deleteDict } from "@/api/dict"
+import { useState,useEffect,useCallback } from "react"
+import { getDictList,saveDict,toggleDictForbiddenFlag,deleteDict } from "@/api/dict"
 import type { Dict } from "@/types/dict"
 import { useDebounce } from "@/hooks/use-debounce"
-import { showMessage, showError } from '@/components/custom/notifications'
+import { showMessage,showError } from '@/components/custom/notifications'
 import { ConfirmDialog } from "@/components/custom/confirm-dialog"
-import { FORBIDDEN_FLAG_CONFIG, FORBIDDEN_FLAG_OPTIONS, getForbiddenFlagConfig } from '@/config/forbidden-flag'
+import { FORBIDDEN_FLAG_CONFIG,FORBIDDEN_FLAG_OPTIONS,getForbiddenFlagConfig } from '@/config/forbidden-flag'
 import { DictEdit } from "./dict-edit"
 import { DEFAULT_PAGE_SIZE } from "@/config/pagination"
 import { Checkbox } from "@/components/ui/checkbox"

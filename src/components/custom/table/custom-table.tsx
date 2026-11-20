@@ -4,8 +4,8 @@ import { useMemo } from 'react'
 import { cn } from "@/lib/utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Pagination } from "@/components/ui/pagination"
-import type { TableProps, TableColumn } from "./custom-table.types"
-import { DEFAULT_HEIGHTS, TABLE_STYLES } from "./table-config"
+import type { TableProps,TableColumn } from "./custom-table.types"
+import { DEFAULT_HEIGHTS,TABLE_STYLES } from "./table-config"
 import { CheckedState } from "@radix-ui/react-checkbox"
 
 const CustomTable = <T extends Record<string, any>>({

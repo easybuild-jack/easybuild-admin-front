@@ -1,23 +1,22 @@
 'use client'
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Dialog,DialogContent,DialogTitle } from "@/components/ui/dialog"
 import type { TableColumn } from "@/components/custom/table"
-import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Search, RotateCw, Plus } from "lucide-react"
+import { Search,RotateCw,Plus } from "lucide-react"
 import type { Dict } from "@/types/dict"
 import { DEFAULT_PAGE_SIZE } from "@/config/pagination"
 import dynamic from 'next/dynamic'
-import { useState, useEffect, useCallback } from "react"
-import { getDictItemList, toggleDictItemForbiddenFlag, deleteDictItem } from "@/api/dict-item"
+import { useState,useEffect,useCallback } from "react"
+import { getDictItemList,toggleDictItemForbiddenFlag,deleteDictItem } from "@/api/dict-item"
 import type { DictItem } from "@/types/dict-item"
 import { useDebounce } from "@/hooks/use-debounce"
 import { DictItemEdit } from "./dict-item-edit"
 import { saveDictItem } from "@/api/dict-item"
-import { showMessage, showError } from '@/components/custom/notifications'
-import { FORBIDDEN_FLAG_CONFIG, getForbiddenFlagConfig } from '@/config/forbidden-flag'
+import { showMessage,showError } from '@/components/custom/notifications'
+import { FORBIDDEN_FLAG_CONFIG,getForbiddenFlagConfig } from '@/config/forbidden-flag'
 import { ConfirmDialog } from "@/components/custom/confirm-dialog"
 import { Switch } from "@/components/ui/switch"
 

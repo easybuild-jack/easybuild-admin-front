@@ -1,19 +1,17 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { Card } from "@/components/ui/card"
 import { usePageTitle } from "@/store"
 import { getUserInfo } from "@/lib/auth"
 import {
-  Layers,
-  Zap,
-  ShieldCheck,
-  Cpu,
-  LayoutTemplate,
-  Terminal,
-  ArrowRight,
-  ExternalLink,
-  Info
+Layers,
+Zap,
+ShieldCheck,
+Cpu,
+LayoutTemplate,
+Terminal,
+ArrowRight,Info
 } from 'lucide-react'
 
 const features = [

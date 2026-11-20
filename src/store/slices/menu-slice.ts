@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { RouteConfig, routes, convertMenuToRoutes } from '@/config/routes'
+import { RouteConfig,routes,convertMenuToRoutes } from '@/config/routes'
 import { menuCache } from '@/lib/menu-cache'
 import http from '@/api/http'
 import { API_URLS } from '@/config/api-url'

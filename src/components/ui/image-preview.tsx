@@ -2,9 +2,9 @@
 
 import * as Dialog from '@radix-ui/react-dialog'
 import { Button } from './button'
-import { RotateCcw, RotateCw, ZoomIn, ZoomOut, X } from 'lucide-react'
+import { RotateCcw,RotateCw,ZoomIn,ZoomOut,X } from 'lucide-react'
 import Image from 'next/image'
-import { useState, useEffect } from 'react'
+import { useState,useEffect } from 'react'
 
 interface ImagePreviewProps {
     open: boolean

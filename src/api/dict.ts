@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
-import type { 
-    DictQueryParams,
-    DictSaveParams,
+import type {
+DictQueryParams,
+DictSaveParams,
 } from '@/types/dict'
 
 // 获取字典列表

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { API_CODE } from '@/config/constants'
 import { API_BASE_URL } from '@/config/api-url'
 import type { ApiResponse } from '@/types/api'
-import { getToken, clearAuth } from '@/lib/auth'
+import { getToken,clearAuth } from '@/lib/auth'
 import { showError } from '@/components/custom/notifications'
 
 // 创建 axios 实例

@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState,useEffect,useRef } from 'react'
 import { CustomDialog } from "@/components/custom/custom-dialog"
 import { CustomForm } from "@/components/custom/form/custom-form"
 import type { CustomFormRef } from "@/components/custom/form/types"
 import { Button } from "@/components/ui/button"
-import { DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { X, Plus, PackageSearch } from "lucide-react"
+import { DialogTitle,DialogDescription } from "@/components/ui/dialog"
+import { X,Plus,PackageSearch } from "lucide-react"
 import * as z from "zod"
 import type { FormField } from "@/components/custom/form/types"
-import { useToast } from "@/hooks/use-toast"
 import { Input } from "@/components/ui/input"
 
 // 修改表单验证schema

@@ -2,9 +2,9 @@
 
 import { MultiSelect } from "@/components/custom/multi-select"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card,CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { useState, useEffect } from "react"
+import { useState,useEffect } from "react"
 import type { GoodsItem } from "@/types/goods"
 import { getSpuDropdownList } from "@/api/spuConfig"
 import { editSpu } from "@/api/goods"

@@ -1,24 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent } from "@/components/ui/card"
+import { useState,useEffect } from 'react'
+import { Card,CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { PlusCircle, Trash2 } from "lucide-react"
-import type { GoodsItem, GoodsExplanation } from "@/types/goods"
+import { PlusCircle,Trash2 } from "lucide-react"
+import type { GoodsItem,GoodsExplanation } from "@/types/goods"
 import { editExplain } from "@/api/goods"
 import { showMessage } from "@/components/custom/notifications"
 import * as z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
+Form,
+FormControl,
+FormField,
+FormItem,
+FormLabel,
+FormMessage,
 } from "@/components/ui/form"
 
 // 定义表单验证schema

@@ -1,6 +1,6 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
-import type { DictItemQuery, DictItemSaveParams } from '@/types/dict-item'
+import type { DictItemQuery,DictItemSaveParams } from '@/types/dict-item'
 
 // 获取字典项列表
 export const getDictItemList = (params: DictItemQuery) => {

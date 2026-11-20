@@ -1,13 +1,13 @@
 import { API_URLS } from '@/config/api-url'
 import type { MockRouteMap } from '@/mock/types'
 import {
-  checkMockAuth,
-  mockError,
-  mockSuccess,
-  paginate,
-  parseIdList,
+checkMockAuth,
+mockError,
+mockSuccess,
+paginate,
+parseIdList,
 } from '@/mock/utils'
-import { getAuthMockStore, nextMockId } from './data'
+import { getAuthMockStore,nextMockId } from './data'
 
 export const employeeRoutes: MockRouteMap = {
   [`GET ${API_URLS.employee.list}`]: (request) => {

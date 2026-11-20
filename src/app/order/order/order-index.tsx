@@ -1,30 +1,28 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState,useEffect,useCallback } from 'react'
 import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import type { TableColumn } from '@/components/custom/table'
-import { Search, RotateCw, Package, Calendar as CalendarIcon, MoreHorizontal, Truck, FileDown, ChevronUp, ChevronDown } from 'lucide-react'
+import { Search,RotateCw,Package,MoreHorizontal,Truck,FileDown } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { useDebounce } from '@/hooks/use-debounce'
-import { showMessage, showError } from '@/components/custom/notifications'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { format, startOfDay, endOfDay } from 'date-fns'
-import { zhCN } from 'date-fns/locale'
+import { showError } from '@/components/custom/notifications'
+import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue } from '@/components/ui/select'
+import { format } from 'date-fns'
 import { DateRangePicker } from '@/components/custom/date-range-picker'
 
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { usePageTitle, useSearchCollapse, useSearchArea } from '@/store'
+import { Tooltip,TooltipContent,TooltipTrigger } from '@/components/ui/tooltip'
+import { DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { usePageTitle,useSearchCollapse,useSearchArea } from '@/store'
 import { getList } from '@/api/order'
 import { getMerchantDropdownList } from '@/api/merchant'
-import type { OrderInfo, OrderQueryParams, AmountInfo } from '@/types/order'
+import type { OrderInfo,OrderQueryParams,AmountInfo } from '@/types/order'
 import {
-  ORDER_STATUS_OPTIONS,
-  getOrderStatusConfig,
-  getDispatchTypeConfig
+ORDER_STATUS_OPTIONS,
+getOrderStatusConfig
 } from '@/types/order'
 import { DEFAULT_PAGE_SIZE } from '@/config/pagination'
 

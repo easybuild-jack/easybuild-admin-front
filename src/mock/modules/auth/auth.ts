@@ -1,7 +1,7 @@
 import { API_URLS } from '@/config/api-url'
 import type { MockRouteMap } from '@/mock/types'
-import { checkMockAuth, mockError, mockSuccess } from '@/mock/utils'
-import { MOCK_ACCOUNT, MOCK_MENUS, generateMockJwt, md5 } from './data'
+import { checkMockAuth,mockError,mockSuccess } from '@/mock/utils'
+import { MOCK_ACCOUNT,MOCK_MENUS,generateMockJwt,md5 } from './data'
 
 export const authRoutes: MockRouteMap = {
   [`POST ${API_URLS.auth.login}`]: async (request) => {

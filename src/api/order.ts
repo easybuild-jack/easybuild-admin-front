@@ -1,13 +1,13 @@
 import { http } from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-  OrderInfo,
-  OrderGoods,
-  OrderQueryParams,
-  OrderDetailParams,
-  OrderRefund,
-  OrderRefundQueryParams,
-  OrderRefundDetailParams
+OrderInfo,
+OrderGoods,
+OrderQueryParams,
+OrderDetailParams,
+OrderRefund,
+OrderRefundQueryParams,
+OrderRefundDetailParams
 } from '@/types/order'
 
 // ==================== 订单相关 API ====================

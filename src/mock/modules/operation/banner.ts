@@ -1,14 +1,14 @@
 import { API_URLS } from '@/config/api-url'
 import type { MockRouteMap } from '@/mock/types'
 import {
-  checkMockAuth,
-  formatNow,
-  mockError,
-  mockSuccess,
-  paginate,
-  parseIdList,
+checkMockAuth,
+formatNow,
+mockError,
+mockSuccess,
+paginate,
+parseIdList,
 } from '@/mock/utils'
-import { getOperationMockStore, nextOperationMockId } from './data'
+import { getOperationMockStore,nextOperationMockId } from './data'
 
 export const bannerRoutes: MockRouteMap = {
   [`GET ${API_URLS.banner.list}`]: (request) => {

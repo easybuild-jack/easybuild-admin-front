@@ -1,36 +1,19 @@
 ﻿'use client'
 
 import { Button } from "@/components/ui/button"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Plus, RotateCw, Search, ChevronDown, X, MoreHorizontal, Edit, Key, Trash2 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Plus,RotateCw,Search,Edit,Key,Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { useState, useEffect, useCallback } from "react"
-import { Pagination } from "@/components/ui/pagination"
-import { getEmployeeList, saveEmployee, toggleEmployeeForbiddenFlag, deleteEmployee } from "@/api/employee"
+import { useState,useEffect,useCallback } from "react"
+import { getEmployeeList,saveEmployee,toggleEmployeeForbiddenFlag,deleteEmployee } from "@/api/employee"
 import type { Employee } from "@/types/employee"
 import { useDebounce } from "@/hooks/use-debounce"
-import { showMessage, showError } from '@/components/custom/notifications'
+import { showMessage,showError } from '@/components/custom/notifications'
 import { ConfirmDialog } from "@/components/custom/confirm-dialog"
 import { Input } from "@/components/ui/input"
 
 import { getRoleSelectList } from "@/api/role"
 import { MultiSelect } from "@/components/custom/multi-select"
-import { FORBIDDEN_FLAG_CONFIG, FORBIDDEN_FLAG_OPTIONS, getForbiddenFlagConfig } from '@/config/forbidden-flag'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { FORBIDDEN_FLAG_CONFIG,FORBIDDEN_FLAG_OPTIONS,getForbiddenFlagConfig } from '@/config/forbidden-flag'
 import { EmployeeEdit } from "./emp-edit"
 import { EditPwd } from "./emp-pwd"
 import { DEFAULT_PAGE_SIZE } from "@/config/pagination"

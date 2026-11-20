@@ -1,23 +1,23 @@
 "use client"
 
-import React, { useEffect, useMemo, memo } from "react"
+import { useEffect,useMemo,memo } from "react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { ChevronRight } from "lucide-react"
 
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
+Collapsible,
+CollapsibleContent,
+CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+SidebarGroup,
+SidebarMenu,
+SidebarMenuButton,
+SidebarMenuItem,
+SidebarMenuSub,
+SidebarMenuSubButton,
+SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { useMenuStore } from "@/store/slices/menu-slice"
 import { cn } from "@/lib/utils"

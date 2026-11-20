@@ -1,10 +1,9 @@
 'use client'
 
 import * as React from "react"
-import { Dialog, DialogContent, DialogClose, DialogTitle } from "../ui/dialog"
+import { Dialog,DialogContent,DialogTitle } from "../ui/dialog"
 import { VisuallyHidden } from "../ui/visually-hidden"
 import { cn } from "@/lib/utils"
-import { X } from "lucide-react"
 import { LoadingSpinner } from "../ui/loading-spinner"
 
 interface CustomDialogProps extends React.HTMLAttributes<HTMLDivElement> {

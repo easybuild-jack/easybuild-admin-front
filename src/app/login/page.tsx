@@ -8,13 +8,13 @@ import type { LoginForm as LoginFormType } from '@/types/user'
 import { useToast } from "@/hooks/use-toast"
 import { useTheme } from "next-themes"
 import { http } from '@/api/http'
-import { useState, useEffect } from 'react'
+import { useState,useEffect } from 'react'
 import CryptoJS from 'crypto-js'
-import { showMessage, showError } from '@/components/custom/notifications'
-import { Loader2, Layers } from "lucide-react"
+import { showMessage,showError } from '@/components/custom/notifications'
+import { Loader2 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import type { TokenContent, TokenData } from '@/types/token'
-import { themeColors, type ThemeColor } from '@/config/theme-colors'
+import type { TokenContent,TokenData } from '@/types/token'
+import { themeColors,type ThemeColor } from '@/config/theme-colors'
 
 const parseJwt = (token: string) => {
     try {

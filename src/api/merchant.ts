@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-    MerchantQueryParams,
-    MerchantSaveParams,
+MerchantQueryParams,
+MerchantSaveParams,
 } from '@/types/merchant'
 
 // 获取超市列表

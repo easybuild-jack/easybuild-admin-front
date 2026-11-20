@@ -1,12 +1,12 @@
 "use client"
 
-import React, { memo } from "react"
+import { memo } from "react"
 import { useRouter } from "next/navigation"
-import { ChevronsUpDown, Store } from "lucide-react"
+import { ChevronsUpDown } from "lucide-react"
 import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
+SidebarMenu,
+SidebarMenuButton,
+SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { useMenuStore } from "@/store/slices/menu-slice"
 

@@ -1,5 +1,4 @@
 import type { TokenContent } from '@/types/token'
-import { menuCache } from "./menu-cache"
 import { resetMenuStore } from '@/store/slices/menu-slice'
 
 export const getToken = () => {

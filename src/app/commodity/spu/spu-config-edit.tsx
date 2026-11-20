@@ -1,18 +1,18 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect,useState,useRef } from 'react'
 import { CustomDialog } from "@/components/custom/custom-dialog"
 import { CustomForm } from "@/components/custom/form/custom-form"
 import type { CustomFormRef } from "@/components/custom/form/types"
 import { Button } from "@/components/ui/button"
 import type { SpuConfig } from "@/types/spu-config"
 import { SpuValueEdit } from './spu-value-edit'
-import { DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { DialogTitle,DialogDescription } from "@/components/ui/dialog"
 import * as z from "zod"
-import type { FormField, FieldType } from "@/components/custom/form/types"
+import type { FormField,FieldType } from "@/components/custom/form/types"
 import { PackageSearch } from "lucide-react"
 import type { UseFormReturn } from "react-hook-form"
-import { CategoryCascader, CategoryCascaderValue } from "@/components/custom/category-cascader"
+import { CategoryCascader,CategoryCascaderValue } from "@/components/custom/category-cascader"
 
 // 定义表单验证schema
 const formSchema = z.object({

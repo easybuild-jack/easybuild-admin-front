@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-    ContainerQueryParams,
-    ContainerSaveParams,
+ContainerQueryParams,
+ContainerSaveParams,
 } from '@/types/container'
 
 // 获取货柜列表

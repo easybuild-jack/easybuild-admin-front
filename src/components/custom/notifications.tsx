@@ -1,17 +1,15 @@
 import * as React from "react"
 import { toast } from "@/hooks/use-toast"
 import {
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  Loader2,
-  Info,
-  Bell,
-  AlertTriangle,
-  Ban,
-  ShieldAlert,
-  ShieldCheck,
-  CheckCheck
+CheckCircle2,
+XCircle,Loader2,
+Info,
+Bell,
+AlertTriangle,
+Ban,
+ShieldAlert,
+ShieldCheck,
+CheckCheck
 } from "lucide-react"
 
 interface NotificationOptions {

@@ -3,21 +3,19 @@
 import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import type { TableColumn } from "@/components/custom/table"
-import { Plus, Search, RotateCw, MoreHorizontal, Edit, Trash2 } from "lucide-react"
+import { Plus,Search,RotateCw,Edit,Trash2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { useState, useCallback, useEffect } from "react"
-import { getList, save, remove } from "@/api/spuConfig"
+import { useState,useCallback,useEffect } from "react"
+import { getList,save,remove } from "@/api/spuConfig"
 import type { SpuConfig } from "@/types/spu-config"
 import { useDebounce } from "@/hooks/use-debounce"
-import { showMessage, showError } from '@/components/custom/notifications'
+import { showMessage,showError } from '@/components/custom/notifications'
 import { ConfirmDialog } from "@/components/custom/confirm-dialog"
 import { DEFAULT_PAGE_SIZE } from "@/config/pagination"
 import { Checkbox } from "@/components/ui/checkbox"
 import { SpuConfigEdit } from "./spu-config-edit"
 import { cn } from "@/lib/utils"
-import { useToast } from "@/hooks/use-toast"
-import { CategoryCascader, CategoryCascaderValue } from "@/components/custom/category-cascader"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { CategoryCascader,CategoryCascaderValue } from "@/components/custom/category-cascader"
 import { usePageTitle } from '@/store'
 
 const CustomTable = dynamic(
