@@ -26,14 +26,15 @@
 
 | 领域 | 技术方案 | 核心优势 |
 |------|---------|---------|
-| **应用框架** | Next.js 15 + React 19 | SSR/SSG 支持、文件系统路由、自动代码分割 |
-| **类型系统** | TypeScript 5 | 全链路类型安全，从 API 到组件一气呵成 |
-| **UI 体系** | Shadcn/ui + Radix UI + Tailwind CSS | 无障碍合规、主题灵活、零运行时 CSS 开销 |
-| **状态管理** | Zustand + TanStack React Query | 极简 Store + 智能服务端缓存，告别样板代码 |
-| **表单引擎** | React Hook Form + Zod | 高性能非受控表单 + 声明式校验，开发效率拉满 |
-| **数据表格** | TanStack React Table | 虚拟化、排序、筛选、固定列，一个组件全搞定 |
+| **应用框架** | Next.js 16 (Turbopack) + React 19 | App Router、极速 Turbopack 编译、SSR/SSG 与自动代码分割 |
+| **类型系统** | TypeScript 6 | 全链路类型安全，从 API 到组件一气呵成 |
+| **UI 体系** | Shadcn/ui + Radix UI + Tailwind CSS 4 | 无障碍合规、CSS-first 主题引擎、零运行时 CSS 开销 |
+| **状态管理** | Zustand 5 | 极简 Slice 模块化 Store，零样板代码，配合本地缓存策略 |
+| **表单引擎** | React Hook Form 7 + Zod 4 | 高性能非受控表单 + 声明式 Schema 校验，开发效率拉满 |
+| **数据表格** | 自研 CustomTable（基于 Shadcn/ui Table） | 列配置驱动、分页、行选择、左右固定列与拖拽扩展一体化 |
 | **HTTP 通信** | Axios（统一封装） | 拦截器链式处理，Token 自动注入，异常统一兜底 |
-| **富文本编辑** | TinyMCE / Tiptap / Novel | 三套编辑器可选，满足从轻量到专业的不同场景 |
+| **本地 Mock** | Next.js Catch-All Route + `src/mock/` | 单入口路由分发、内存持久化 CRUD 与本地图片上传预览，离线开箱即用 |
+| **富文本编辑** | Tiptap 3 | 轻量可扩展的现代化富文本编辑器，支持图片、链接、对齐等扩展 |
 | **主题引擎** | next-themes + CSS Variables | 深浅模式一键切换、20+ 预置主题色即时生效 |
 
 ### 2.2 六层解耦架构
@@ -42,28 +43,25 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                      EasyBuild Admin                         │
 │  ┌─────────────────────────────────────────────────────────┐ │
-│  │                   Middleware 层                          │ │
-│  │              路由守卫 · 权限拦截 · 请求预处理              │ │
-│  ├─────────────────────────────────────────────────────────┤ │
 │  │                    Layout 层                             │ │
 │  │     侧边栏 · 顶栏 · 面包屑 · 主题引擎 · 通知中心         │ │
 │  ├─────────────────────────────────────────────────────────┤ │
-│  │           业务模块层（由驱动驱动）                        │ │
+│  │           业务模块层（由动态菜单驱动）                    │ │
 │  │  后端下发菜单 → 前端自动渲染 → 模块自由组合                │ │
-│  │  [模块A] [模块B] [模块C] [模块D] [...]                   │ │
+│  │  [权限管理] [基础设置] [运营管理] [会员管理] [系统设置]... │ │
 │  ├─────────────────────────────────────────────────────────┤ │
 │  │                  通用能力层                              │ │
 │  │  CustomTable · CustomForm · FileUpload · Notifications   │ │
 │  │  ConfirmDialog · CascadeSelector · DateRangePicker       │ │
 │  ├─────────────────────────────────────────────────────────┤ │
 │  │                  基础 UI 层 (Shadcn/ui)                  │ │
-│  │  40+ 无障碍基础组件 · 统一设计语言 · 主题变量驱动          │ │
+│  │  30+ 无障碍基础组件 · 统一设计语言 · 主题变量驱动          │ │
 │  ├─────────────────────────────────────────────────────────┤ │
-│  │                  数据通信层                              │ │
-│  │  Axios 封装 · Token 自动管理 · 统一错误处理 · API 模块化  │ │
+│  │               数据通信 & 本地 Mock 层                    │ │
+│  │  Axios 封装 · Token 自动管理 · 统一错误处理 · /api Mock  │ │
 │  ├─────────────────────────────────────────────────────────┤ │
 │  │                  状态管理层                              │ │
-│  │  Zustand (App/Sidebar/Menu Slices) · React Query 缓存   │ │
+│  │  Zustand 5 (App/Sidebar/Menu Slices) · MenuCache 缓存   │ │
 │  └─────────────────────────────────────────────────────────┘ │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -100,7 +98,7 @@
 | **多主题 & 暗黑模式** | 内置 20+ 精心调校的主题色（曜石黑、海洋蓝、翡翠绿、玫瑰色……），深浅模式一键切换，支持跟随系统自动适配 |
 | **统一 CRUD 模式** | 搜索 + 表格 + 分页 + 新增/编辑/删除/启禁用，所有管理页面遵循统一交互范式，用户学习成本趋近于零 |
 | **类型安全全链路** | 从 API 响应类型 → Store 状态类型 → 组件 Props 类型，TypeScript 全覆盖，重构无忧 |
-| **多环境部署** | 开发/测试/生产三套环境一键切换，环境变量隔离，构建命令标准化 |
+| **多环境部署与本地 Mock** | 开发环境内置本地 Mock（`/api`）免后端即开即用，测试环境（`.env.test`）与生产环境（`.env.production`）独立配置，一键切换真实后端 |
 | **国际化预置** | i18n 基础架构已搭建，支持中/英文切换，可按需扩展更多语种 |
 | **响应式布局** | 移动优先设计，侧边栏可折叠至图标模式，适配从桌面到平板的多种屏幕尺寸 |
 
@@ -108,19 +106,20 @@
 
 | 特性 | 开发者收益 |
 |------|-----------|
-| **声明式表单** | 通过 JSON 配置定义字段，Zod Schema 声明校验规则，告别重复的表单 JSX 编写 |
+| **声明式表单** | 通过 JSON 配置定义字段，Zod 4 Schema 声明校验规则，告别重复的表单 JSX 编写 |
 | **配置化表格** | 列定义 + 数据源即可渲染完整的数据表格，内置分页、选择、固定列、空状态 |
 | **统一通知系统** | `showMessage` / `showError` / `showWarning` / `showLoading` 四种通知一行代码调用 |
 | **API 模块化** | 按业务域拆分 API 文件，URL 集中配置，新增接口只需两步 |
-| **安全机制内置** | 登录密码加密传输、JWT Token 自动解析存储、请求鉴权自动注入 |
+| **离线 Mock 调试** | 内置单入口 `/api/[...slug]` 分发器与 `src/mock/` 分模块数据，支持 Network 面板真实抓包与内存态 CRUD |
+| **安全机制内置** | 登录密码 MD5 加密传输、JWT Token 自动解析存储、请求鉴权自动注入 |
 | **菜单智能缓存** | 菜单数据本地缓存 30 分钟，减少重复请求，提升页面切换流畅度 |
 
 ### 3.4 面向未来的技术底座
 
 - **React 19** — 享受最新的并发特性与性能优化
-- **Next.js 15 App Router** — 文件系统路由、服务端组件、流式渲染一步到位
+- **Next.js 16 + Turbopack** — 文件系统路由、极速开发与构建编译、服务端组件一步到位
 - **Radix UI 无障碍合规** — 所有交互组件符合 WAI-ARIA 标准，无障碍友好
-- **Tailwind CSS 原子化** — 零运行时样式开销，构建产物极致精简
+- **Tailwind CSS 4** — `@tailwindcss/postcss` 引擎驱动，零运行时样式开销，构建产物极致精简
 
 ---
 
@@ -232,11 +231,11 @@
 - **级联选择器**：多级数据级联选择，树形结构逐级展开
 - **弹窗式选择器**：弹窗交互模式，适合数据量较大的场景
 
-### 4.10 40+ 基础 UI 组件（Shadcn/ui）
+### 4.10 30+ 基础 UI 组件（Shadcn/ui）
 
-除上述业务组件外，脚手架还内置了 40+ 基于 Radix UI 的基础组件，**源码完全在项目中，可随时定制**：
+除上述业务组件外，脚手架还内置了 30+ 基于 Radix UI 的基础组件，**源码完全在项目中，可随时定制**：
 
-> Button / Input / Select / Textarea / Checkbox / Radio / Switch / Label / Badge / Avatar / Card / Table / Pagination / Dialog / AlertDialog / Sheet / Popover / Tooltip / DropdownMenu / Command / Calendar / DateTimePicker / Form / Progress / Skeleton / LoadingSpinner / ScrollArea / Separator / Breadcrumb / Collapsible / Toggle / HoverCard / RichEditor / ImagePreview / VideoPreview / Sidebar / Toast / Toaster ...
+> Button / Input / Select / Textarea / Checkbox / RadioGroup / Switch / Label / Badge / Avatar / Card / Table / Pagination / Dialog / AlertDialog / Sheet / Popover / Tooltip / DropdownMenu / Command / Calendar / DateTimePicker / Form / Progress / Skeleton / LoadingSpinner / ScrollArea / Separator / Breadcrumb / Collapsible / Toggle / RichEditor / ImagePreview / VideoPreview / Sidebar / Toast / Toaster / VisuallyHidden
 
 ---
 
@@ -287,6 +286,14 @@
 | **请求鉴权** | 每次请求自动携带 Token 头，后端校验即可 |
 | **菜单权限** | 后端通过菜单资源接口下发当前用户可见菜单，前端动态渲染 |
 | **角色授权** | 后端提供资源树 + 角色资源关联接口，前端提供树形勾选授权界面 |
+
+### 5.4 本地 Mock 调试机制
+
+项目内置基于 Next.js App Router 的轻量级 Mock 引擎，无需启动真实后端即可本地完整调试：
+
+- **单入口路由转发**：`src/app/api/[...slug]/route.ts` 统一接收 `/api/*` 请求并交由 `src/mock/index.ts` 分发（生产环境自动返回 404）。
+- **模块化管理**：Mock 数据与接口按业务域存放在 `src/mock/modules/`（`auth`、`base`、`operation`、`customer`、`system`、`common`），路由 key 直接复用 `API_URLS` 常量，并通过 `globalThis` 持久化内存状态。
+- **开箱体验模块**：开发环境（`.env.development`）默认启用 **权限管理（部门/角色/员工）、基础设置（分类/品牌/分组/标签）、运营管理（Banner）、会员管理（用户）、系统设置（字典与字典项）** 及通用文件上传 Mock；未做 Mock 的业务模块在 Mock 菜单中自动隐藏，连接真实后端（如 `.env.test` 中的 `http://localhost:5001/api`）即可按后端菜单权限完整展示。
 
 ---
 
@@ -367,9 +374,9 @@
 
 | 维度 | 传统 Vue2 + ElementUI 方案 | **EasyBuild Admin** (易构) |
 |------|--------------------------|---------------------|
-| 框架版本 | Vue 2（已停止维护） | React 19 + Next.js 15（最新稳定版） |
-| 类型安全 | 有限的 TypeScript 支持 | 全链路 TypeScript，从 API 到组件 |
-| 样式方案 | 全局 CSS + 覆盖样式 | Tailwind 原子化 CSS，零冲突 |
+| 框架版本 | Vue 2（已停止维护） | React 19 + Next.js 16（最新稳定版） |
+| 类型安全 | 有限的 TypeScript 支持 | 全链路 TypeScript 6，从 API 到组件 |
+| 样式方案 | 全局 CSS + 覆盖样式 | Tailwind CSS 4 原子化样式，零冲突 |
 | 组件质量 | 依赖第三方 UI 库的更新节奏 | Shadcn/ui 代码归你所有，可随时定制 |
 | 主题能力 | 有限的 CSS 变量覆盖 | 20+ 预置主题色 + 深浅模式 + 即时预览 |
 | 表单体验 | 大量模板代码 | 声明式配置 + 自动校验 |
@@ -404,10 +411,13 @@
 ## 八、快速上手
 
 ```bash
+# 启用 Corepack（自动激活项目指定的 Yarn 4.7.0）
+corepack enable
+
 # 安装依赖
 yarn install
 
-# 启动开发环境
+# 启动开发环境（默认端口 4000，内置本地 Mock 接口）
 yarn dev
 
 # 构建生产版本
@@ -417,7 +427,10 @@ yarn build:prod
 yarn start:prod
 ```
 
-环境要求：Node.js ≥ 18，Yarn ≥ 4.7.0
+- **访问地址**：`http://localhost:4000`
+- **默认 Mock 登录账号**：账号 `admin` / 密码 `12345`
+- **环境切换**：开发环境（`.env.development`）默认对接内置 Mock（`/api`）；测试环境（`.env.test`）指向本地后端 `http://localhost:5001/api`
+- **环境要求**：Node.js ≥ 20.9，Yarn 4.7.0（Corepack 管理）
 
 ---
 
@@ -428,7 +441,7 @@ yarn start:prod
 它能为你带来：
 
 - **一套标准**：统一的编码规范、接口规范、组件规范，团队协作不再混乱
-- **一套组件**：40+ 基础 UI 组件 + 10+ 高级业务组件（声明式表单、配置化表格、文件上传、通知系统、弹窗容器等），覆盖 90% 的中后台场景
+- **一套组件**：30+ 基础 UI 组件 + 10+ 高级业务组件（声明式表单、配置化表格、文件上传、通知系统、弹窗容器等），覆盖 90% 的中后台场景
 - **一套流程**：从登录认证到权限控制到业务 CRUD，完整的业务闭环
 - **一种灵活**：菜单由后端动态生成，业务模块自由组合，同一套代码今天做零售、明天做仓储、后天做 OA
 - **一种效率**：新模块开发从"一周"缩短到"一天"，让团队把时间花在真正的业务创新上
