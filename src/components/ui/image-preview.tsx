@@ -62,10 +62,10 @@ export function ImagePreview({
         >
             <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/80 z-[99]" />
-                <Dialog.Content className="fixed inset-0 flex flex-col z-[100]">
+                <Dialog.Content aria-describedby={undefined} className="fixed inset-0 flex flex-col z-[100]">
                     {/* 头部工具栏 */}
                     <div className="h-12 bg-black/40 backdrop-blur-sm px-4 flex items-center justify-between relative z-[102]">
-                        <span className="text-white font-medium">{title}</span>
+                        <Dialog.Title className="text-white font-medium">{title}</Dialog.Title>
                         <div className="flex items-center gap-2">
                             <Button
                                 variant="ghost"

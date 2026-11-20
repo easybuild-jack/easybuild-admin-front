@@ -15,8 +15,8 @@ interface LoginFormProps {
 export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
     const [showPassword, setShowPassword] = useState(false)
     const [formData, setFormData] = useState({
-        loginAccount: 'dev',
-        password: 'dev@123',
+        loginAccount: 'admin',
+        password: '12345',
     })
     const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -87,18 +87,18 @@ export function LoginForm({ onSubmit, isLoading }: LoginFormProps) {
                         <Input
                             type={showPassword ? "text" : "password"}
                             required
-                            minLength={6}
+                            minLength={5}
                             placeholder="输入密码..."
                             value={formData.password}
                             onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                             className={cn(inputStyles, "pr-14")}
                             disabled={isDisabled}
-                            title="请填写密码（至少6位字符）"
+                            title="请填写密码（至少5位字符）"
                             onInvalid={(e: any) => {
                                 if (e.target.validity.valueMissing) {
                                     e.target.setCustomValidity('密码可不能忘记输入哦')
                                 } else if (e.target.validity.tooShort) {
-                                    e.target.setCustomValidity('密码至少需要6位字符哦')
+                                    e.target.setCustomValidity('密码至少需要5位字符哦')
                                 }
                             }}
                             onInput={(e: any) => {
