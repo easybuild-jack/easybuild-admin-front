@@ -12,6 +12,7 @@ import type { CheckedState } from "@radix-ui/react-checkbox"
 
 interface ColumnMeta<T> {
     column: TableColumn<T>
+    isSelectionCol: boolean
     colStyle: CSSProperties
     headerStyle: CSSProperties
     cellStyle?: CSSProperties
@@ -150,13 +151,14 @@ function TableRowInner<T extends Record<string, any>>({
             )}
 
             {columnMeta.map((meta) => {
-                const { column } = meta
+                const { column, isSelectionCol } = meta
                 return (
                     <td
                         key={column.key}
                         className={cn(
-                            column.className || "p-4",
-                            "align-middle overflow-hidden",
+                            column.className || (isSelectionCol ? "px-0 py-2" : "p-4"),
+                            "align-middle",
+                            !isSelectionCol && "overflow-hidden",
                             meta.cellAlignClass,
                             meta.fixedClass,
                             cellBorderClass
@@ -168,7 +170,10 @@ function TableRowInner<T extends Record<string, any>>({
                                 : undefined
                         }
                     >
-                        <div className="truncate text-sm flex items-center h-full">
+                        <div className={cn(
+                            "text-sm flex items-center h-full",
+                            !isSelectionCol && "truncate"
+                        )}>
                             <div className={cn("flex items-center w-full", meta.contentJustifyClass)}>
                                 {column.render
                                     ? column.render((record as any)[column.key], record, rowIndex)
@@ -282,26 +287,30 @@ const CustomTable = <T extends Record<string, any>>({
 
             const headerStyle: CSSProperties = cellStyle ? { ...colStyle, ...cellStyle } : colStyle
 
+            const isSelectionCol = column.key === 'selection'
+            const effectiveAlign = isSelectionCol ? (column.align || 'center') : column.align
+
             const alignClass =
-                index === 0
+                !isSelectionCol && index === 0
                     ? 'text-left'
-                    : column.align === 'center'
+                    : effectiveAlign === 'center'
                         ? 'text-center'
-                        : column.align === 'right'
+                        : effectiveAlign === 'right'
                             ? 'text-right'
                             : ''
 
             const contentJustifyClass =
-                index === 0
+                !isSelectionCol && index === 0
                     ? 'justify-start'
-                    : column.align === 'center'
+                    : effectiveAlign === 'center'
                         ? 'justify-center'
-                        : column.align === 'right'
+                        : effectiveAlign === 'right'
                             ? 'justify-end'
                             : 'justify-start'
 
             return {
                 column,
+                isSelectionCol,
                 colStyle,
                 headerStyle,
                 cellStyle,
@@ -483,12 +492,13 @@ const CustomTable = <T extends Record<string, any>>({
 
                                     {/* 数据列表头 */}
                                     {columnMeta.map((meta) => {
-                                        const { column } = meta
+                                        const { column, isSelectionCol } = meta
                                         return (
                                             <th
                                                 key={column.key}
                                                 className={cn(
-                                                    "h-12 px-4 align-middle font-bold text-muted-foreground",
+                                                    "h-12 align-middle font-bold text-muted-foreground",
+                                                    isSelectionCol ? "px-0" : "px-4",
                                                     meta.headerAlignClass,
                                                     meta.headerFixedClass,
                                                     headerBorderClass
