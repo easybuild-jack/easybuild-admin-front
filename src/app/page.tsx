@@ -63,27 +63,30 @@ const heroHighlights = [
   { label: '动态路由缓存', icon: Route },
 ]
 
+/** 首页主视觉里强调的四条原则，逐个 nowrap 渲染，避免词语被拆行 */
+const heroPrinciples = ['业务自定义', '按需搭建', '即配即用', '标准化开发']
+
 const features = [
   {
     index: '01',
-    title: '业务无关',
-    description: '菜单权限由后端动态下发，前端不硬编码任何业务逻辑。',
+    title: '业务自定义',
+    description: '根据业务自由选择模块，自由搭建系统业务。',
     icon: Layers,
     accent: 'text-sky-600 dark:text-sky-400',
     iconBg: 'bg-sky-500/10 ring-1 ring-sky-500/20',
   },
   {
     index: '02',
-    title: '即插即用',
-    description: '新增模块只需创建页面 + 后端注册，侧边栏自动出现，无需改路由。',
+    title: '即配即用',
+    description: '后端选择所需业务模块，数据库注册模块资源，前端菜单和标准功能立即拥有。',
     icon: Zap,
     accent: 'text-amber-600 dark:text-amber-400',
     iconBg: 'bg-amber-500/10 ring-1 ring-amber-500/20',
   },
   {
     index: '03',
-    title: '类型安全',
-    description: 'TypeScript 6 全链路类型覆盖，从 API 到组件一气呵成。',
+    title: '标准化开发',
+    description: '提供完善的业务开发标准和底层组件，让开发变得既标准又高效。',
     icon: ShieldCheck,
     accent: 'text-emerald-600 dark:text-emerald-400',
     iconBg: 'bg-emerald-500/10 ring-1 ring-emerald-500/20',
@@ -212,7 +215,12 @@ export default function Home() {
                   易构（EasyBuild）产品生态中的中后台前端脚手架 ——
                   一款清爽、美观、开箱即用的现代化框架，为全栈工程师、前端及后端工程师量身打造。遵循
                   <span className="mx-1 font-semibold text-foreground underline decoration-primary/40 decoration-2 underline-offset-4">
-                    业务无关、按需组装、即插即用
+                    {heroPrinciples.map((item, i) => (
+                      <span key={item} className="whitespace-nowrap">
+                        {item}
+                        {i < heroPrinciples.length - 1 ? '、' : ''}
+                      </span>
+                    ))}
                   </span>
                   的核心理念。
                 </p>
