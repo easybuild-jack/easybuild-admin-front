@@ -184,7 +184,7 @@ export default function Login() {
               </span>
             </h1>
             <p className="text-sm leading-7 text-muted-foreground max-w-lg">
-              {loginConfig.subDescription}，前端按需组装、即插即用，助力团队高效构建企业级管理平台。
+              {loginConfig.subDescription}，前端按需搭建、即配即用，助力团队高效构建企业级管理平台。
             </p>
           </div>
 
