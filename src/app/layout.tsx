@@ -97,7 +97,7 @@ const jsonLd = {
     name: siteConfig.author.name,
     url: siteConfig.author.url,
   },
-  codeRepository: siteConfig.links.backendApi,
+  codeRepository: siteConfig.links.github,
 };
 
 export default function RootLayout({

@@ -28,6 +28,7 @@ export const siteConfig = {
     url: 'https://github.com/easybuild-jack',
   },
   links: {
+    github: 'https://github.com/easybuild-jack/easybuild-admin-front',
     backendApi: 'https://github.com/easybuild-jack/easybuild-admin-api',
   },
 } as const
