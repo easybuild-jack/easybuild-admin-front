@@ -1,5 +1,5 @@
 const brand = "易构 BMS"
-const tagline = "业务无关的企业级中后台脚手架"
+const tagline = "现代化企业级中后台开发框架"
 
 export const loginConfig = {
   name: "EasyBuild Admin",
