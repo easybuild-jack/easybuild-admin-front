@@ -175,10 +175,13 @@ export default function Login() {
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               Enterprise Scaffold
             </div>
-            <h1 className="font-display text-4xl xl:text-[42px] font-extrabold tracking-tight leading-[1.2] text-foreground">
-              业务无关的企业级
-              <br />
-              <span className="text-primary">中后台前端脚手架</span>
+            <h1 className="font-display font-extrabold tracking-tight leading-[1.2] text-foreground">
+              <span className="mb-2 block text-xl font-bold tracking-[0.01em] text-primary xl:text-[22px]">
+                {loginConfig.brand}
+              </span>
+              <span className="block text-3xl xl:text-[38px]">
+                {loginConfig.tagline}
+              </span>
             </h1>
             <p className="text-sm leading-7 text-muted-foreground max-w-lg">
               {loginConfig.subDescription}，前端按需组装、即插即用，助力团队高效构建企业级管理平台。
