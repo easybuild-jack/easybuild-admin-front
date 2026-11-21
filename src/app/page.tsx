@@ -23,7 +23,24 @@ import {
   Sparkles,
   Copy,
   Check,
+  ArrowUpRight,
 } from 'lucide-react'
+
+const ADMIN_API_REPO_URL = 'https://github.com/easybuild-jack/easybuild-admin-api'
+const ADMIN_API_GIT_URL = 'https://github.com/easybuild-jack/easybuild-admin-api.git'
+
+function GitHubIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      aria-hidden="true"
+      className={className}
+    >
+      <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z" />
+    </svg>
+  )
+}
 
 const heroHighlights = [
   { label: '响应式布局', icon: LayoutTemplate },
@@ -156,47 +173,110 @@ export default function Home() {
         />
 
         <div className="relative z-10 p-7 sm:p-10 lg:p-12">
-          <div className="max-w-3xl space-y-6">
-            {/* Eyebrow badge */}
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.08] px-3.5 py-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-primary">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-              </span>
-              New Generation Scaffold
-            </div>
-
-            {/* Display Title */}
-            <div className="space-y-3">
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-[44px] font-extrabold tracking-[-0.03em] leading-[1.15] text-foreground">
-                EasyBuild Admin
-                <span className="mx-3 font-light text-muted-foreground/40">—</span>
-                <span className="bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
-                  易构
+          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
+            <div className="max-w-3xl space-y-6">
+              {/* Eyebrow badge */}
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.08] px-3.5 py-1.5 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-primary">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
                 </span>
-              </h1>
-              <p className="text-[15px] sm:text-base text-muted-foreground leading-[1.85] max-w-2xl">
-                一款清爽、美观、开箱即用的现代化中后台前端框架，为全栈工程师、前端及后端工程师量身打造。遵循
-                <span className="mx-1 font-semibold text-foreground underline decoration-primary/40 decoration-2 underline-offset-4">
-                  业务无关、按需组装、即插即用
-                </span>
-                的核心理念。
-              </p>
-            </div>
+                New Generation Scaffold
+              </div>
 
-            {/* Highlight Pills */}
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              {heroHighlights.map((item) => (
-                <div
-                  key={item.label}
-                  className="inline-flex items-center gap-2.5 rounded-xl border border-border/70 bg-background/80 px-4 py-2 text-sm font-medium text-foreground/90 shadow-xs backdrop-blur-sm transition-colors hover:border-primary/40 hover:bg-primary/[0.04]"
-                >
-                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <item.icon className="h-3.5 w-3.5" />
+              {/* Display Title */}
+              <div className="space-y-3">
+                <h1 className="font-display text-3xl sm:text-4xl lg:text-[44px] font-extrabold tracking-[-0.03em] leading-[1.15] text-foreground">
+                  EasyBuild Admin
+                  <span className="mx-3 font-light text-muted-foreground/40">—</span>
+                  <span className="bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
+                    易构
                   </span>
-                  <span>{item.label}</span>
+                </h1>
+                <p className="text-[15px] sm:text-base text-muted-foreground leading-[1.85] max-w-2xl">
+                  一款清爽、美观、开箱即用的现代化中后台前端框架，为全栈工程师、前端及后端工程师量身打造。遵循
+                  <span className="mx-1 font-semibold text-foreground underline decoration-primary/40 decoration-2 underline-offset-4">
+                    业务无关、按需组装、即插即用
+                  </span>
+                  的核心理念。
+                </p>
+              </div>
+
+              {/* Highlight Pills */}
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                {heroHighlights.map((item) => (
+                  <div
+                    key={item.label}
+                    className="inline-flex items-center gap-2.5 rounded-xl border border-border/70 bg-background/80 px-4 py-2 text-sm font-medium text-foreground/90 shadow-xs backdrop-blur-sm transition-colors hover:border-primary/40 hover:bg-primary/[0.04]"
+                  >
+                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <item.icon className="h-3.5 w-3.5" />
+                    </span>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Companion Backend API Repo Card */}
+            <div className="w-full lg:w-[340px] shrink-0 rounded-2xl border border-border/70 bg-background/80 p-5 shadow-xs backdrop-blur-md transition-colors hover:border-primary/40 dark:bg-background/50">
+              <a
+                href={ADMIN_API_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-start justify-between gap-3"
+              >
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-foreground text-background shadow-xs transition-transform duration-300 group-hover:scale-105">
+                    <GitHubIcon className="h-5 w-5" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-mono text-[10.5px] font-semibold uppercase tracking-[0.16em] text-primary">
+                      Backend API
+                    </div>
+                    <div className="font-display text-[15px] font-bold tracking-tight text-foreground group-hover:text-primary transition-colors truncate">
+                      Admin 后台接口项目
+                    </div>
+                  </div>
                 </div>
-              ))}
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border/70 bg-card text-muted-foreground transition-all duration-200 group-hover:border-primary/40 group-hover:bg-primary/10 group-hover:text-primary">
+                  <ArrowUpRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </span>
+              </a>
+
+              <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+                配套后端接口仓库，遵循统一响应规范与动态菜单协议，开箱联调。
+              </p>
+
+              <div className="mt-3.5 flex items-center justify-between gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-2">
+                <a
+                  href={ADMIN_API_REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={ADMIN_API_GIT_URL}
+                  className="font-mono text-[11.5px] text-foreground/85 hover:text-primary transition-colors truncate"
+                >
+                  easybuild-jack/easybuild-admin-api.git
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleCopy(ADMIN_API_GIT_URL)}
+                  className="inline-flex shrink-0 items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:bg-background hover:text-primary transition-colors"
+                  aria-label="复制后台接口仓库地址"
+                >
+                  {copiedCmd === ADMIN_API_GIT_URL ? (
+                    <>
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                      <span className="text-emerald-500">已复制</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" />
+                      <span>复制</span>
+                    </>
+                  )}
+                </button>
+              </div>
             </div>
           </div>
         </div>
