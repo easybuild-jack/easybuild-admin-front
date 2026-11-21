@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-  EmployeeQueryParams,
-  EmployeeSaveParams,
+EmployeeQueryParams,
+EmployeeSaveParams,
 } from '@/types/employee'
 
 // 获取员工列表

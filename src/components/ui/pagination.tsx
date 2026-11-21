@@ -3,13 +3,13 @@
 import { cn } from "@/lib/utils"
 import { Button } from "./button"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
+Select,
+SelectContent,
+SelectItem,
+SelectTrigger,
+SelectValue,
 } from "./select"
-import { PAGE_SIZE_OPTIONS, DEFAULT_PAGE_SIZE } from "@/config/pagination"
+import { PAGE_SIZE_OPTIONS,DEFAULT_PAGE_SIZE } from "@/config/pagination"
 import { PAGINATION_LOCALES } from "@/config/i18n/pagination"
 import { useLocale } from "@/hooks/use-locale"
 

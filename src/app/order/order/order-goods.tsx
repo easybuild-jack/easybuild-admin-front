@@ -1,13 +1,13 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState,useEffect } from 'react'
 import { getOrderGoods } from '@/api/order'
-import type { OrderGoods, AmountInfo } from '@/types/order'
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import type { OrderGoods,AmountInfo } from '@/types/order'
+import { Dialog,DialogContent,DialogHeader,DialogTitle } from '@/components/ui/dialog'
 import { showError } from '@/components/custom/notifications'
 import dynamic from 'next/dynamic'
 import type { TableColumn } from '@/components/custom/table'
-import { Package, Hash, Layers, ShoppingBag } from 'lucide-react'
+import { Package,ShoppingBag } from 'lucide-react'
 
 const CustomTable = dynamic(
     () => import('@/components/custom/table').then(mod => mod.CustomTable),

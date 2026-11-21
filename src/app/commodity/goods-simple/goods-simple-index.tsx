@@ -3,24 +3,22 @@
 import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import type { TableColumn } from "@/components/custom/table"
-import { Plus, Search, RotateCw, MoreHorizontal, Edit, Trash2 } from "lucide-react"
+import { Plus,Search,RotateCw,Edit,Trash2 } from "lucide-react"
 import { Input } from "@/components/ui/input"
-import { useState, useCallback, useEffect, SetStateAction } from "react"
-import { getList, remove, toggleSaleFlag } from "@/api/goods"
+import { useState,useCallback,useEffect,SetStateAction } from "react"
+import { getList,remove,toggleSaleFlag } from "@/api/goods"
 import { getMerchantDropdownList } from "@/api/merchant"
-import { getCategoryDropdownList } from "@/api/category"
 import { useDebounce } from "@/hooks/use-debounce"
-import { showMessage, showError } from '@/components/custom/notifications'
+import { showMessage,showError } from '@/components/custom/notifications'
 import { ConfirmDialog } from "@/components/custom/confirm-dialog"
 import { DEFAULT_PAGE_SIZE } from "@/config/pagination"
 import { Checkbox } from "@/components/ui/checkbox"
 import { GoodsSimpleEdit } from "./goods-simple-edit"
 import { cn } from "@/lib/utils"
 import type { GoodsItem } from "@/types/goods"
-import { CategoryCascader, type CategoryCascaderValue } from "@/components/custom/category-cascader"
+import { CategoryCascader,type CategoryCascaderValue } from "@/components/custom/category-cascader"
 import { Switch } from "@/components/ui/switch"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue } from "@/components/ui/select"
 import { usePageTitle } from '@/store'
 
 const CustomTable = dynamic(

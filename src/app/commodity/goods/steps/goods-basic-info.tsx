@@ -1,22 +1,17 @@
 'use client'
 
-import { forwardRef, useImperativeHandle, useRef, useState, useEffect } from "react"
+import { forwardRef,useImperativeHandle,useRef,useState,useEffect } from "react"
 import * as z from "zod"
 import { CustomForm } from "@/components/custom/form/custom-form"
-import type { CustomFormRef, FieldType, FormField } from "@/components/custom/form/types"
+import type { CustomFormRef,FieldType,FormField } from "@/components/custom/form/types"
 import type { GoodsItem } from "@/types/goods"
 import type { UseFormReturn } from "react-hook-form"
 import { getBrandDropdownList } from "@/api/brand"
-import { CategoryCascader, CategoryCascaderValue } from "@/components/custom/category-cascader"
+import { CategoryCascader,CategoryCascaderValue } from "@/components/custom/category-cascader"
 import {
-    SALE_TYPE_OPTIONS,
-    SKU_TYPE_OPTIONS,
-    DISTRIBUTION_TYPE_OPTIONS,
-    FLAG_OPTIONS
+SKU_TYPE_OPTIONS,FLAG_OPTIONS
 } from "@/constants/goods"
-import { Button } from "@/components/ui/button"
 import { DateTimePicker } from "@/components/ui/date-time-picker"
-import { format } from "date-fns"
 
 // 表单验证规则
 const formSchema = z.object({

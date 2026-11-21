@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
-import type { 
-  TagQueryParams,
-  TagSaveParams,
+import type {
+TagQueryParams,
+TagSaveParams,
 } from '@/types/tag'
 
 // 获取标签列表

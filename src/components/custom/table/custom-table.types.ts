@@ -1,5 +1,5 @@
-import type { ReactNode, CSSProperties } from 'react'
-import type { BorderType, HoverType, TableConfig } from './table-config'
+import type { ReactNode,CSSProperties } from 'react'
+import type { BorderType,HoverType,TableConfig } from './table-config'
 
 // 选择配置接口
 export interface TableSelection {

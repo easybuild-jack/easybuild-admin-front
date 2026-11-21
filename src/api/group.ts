@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-  GroupQueryParams,
-  GroupSaveParams,
+GroupQueryParams,
+GroupSaveParams,
 } from '@/types/group'
 
 // 获取分类组列表

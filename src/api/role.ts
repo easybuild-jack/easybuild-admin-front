@@ -1,7 +1,7 @@
-import { http } from './http'
-import { API_URLS } from '@/config/api-url'
-import type { Role, RoleQuery, RoleForm } from '@/types/role'
-import type { ApiResponse } from '@/types/api'
+import { http } from './http';
+import { API_URLS } from '@/config/api-url';
+import type { Role,RoleQuery,RoleForm } from '@/types/role';
+import type { ApiResponse } from '@/types/api';
 
 // 定义角色权限接口的返回数据类型
 interface ResourceItem {

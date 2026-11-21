@@ -1,5 +1,6 @@
 'use client'
 
+import { memo } from "react"
 import { AlertCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -7,10 +8,8 @@ import {
     AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
-    AlertDialogFooter,
-    AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogDescription,
+    AlertDialogDescription
 } from "@/components/ui/alert-dialog"
 
 const DIALOG_TYPES = {
@@ -52,7 +51,7 @@ const typeStyles = {
     [DIALOG_TYPES.WARNING]: {
         icon: "text-yellow-500",
         bg: "bg-yellow-50 dark:bg-yellow-900/20",
-        border: "border-yellow-200 dark:border-yellow-900/50", 
+        border: "border-yellow-200 dark:border-yellow-900/50",
         button: "bg-yellow-500 hover:bg-yellow-600",
         title: "text-yellow-500",
         ...commonStyles
@@ -61,13 +60,13 @@ const typeStyles = {
         icon: "text-green-500",
         bg: "bg-green-50 dark:bg-green-900/20",
         border: "border-green-200 dark:border-green-900/50",
-        button: "bg-green-500 hover:bg-green-600", 
+        button: "bg-green-500 hover:bg-green-600",
         title: "text-green-500",
         ...commonStyles
     }
 } as const
 
-export function ConfirmDialog({
+export const ConfirmDialog = memo(function ConfirmDialog({
     open,
     onOpenChange,
     title,
@@ -81,13 +80,9 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
     const styles = typeStyles[type]
 
-    const handleOpenChange = (open: boolean) => {
-        onOpenChange(open)
-    }
-
     return (
-        <AlertDialog open={open} onOpenChange={handleOpenChange}>
-            <AlertDialogContent 
+        <AlertDialog open={open} onOpenChange={onOpenChange}>
+            <AlertDialogContent
                 className={cn(
                     "sm:max-w-[425px] p-0",
                     "fixed top-[80px] left-1/2 -translate-x-1/2 translate-y-0",
@@ -148,8 +143,7 @@ export function ConfirmDialog({
                 </div>
 
                 <div className="flex items-center justify-end gap-3 px-6 py-3.5 border-t border-border/20">
-                    <AlertDialogCancel 
-                        onClick={() => handleOpenChange(false)}
+                    <AlertDialogCancel
                         className={cn(
                             "min-w-[84px] h-8",
                             "hover:bg-muted/80 transition-colors duration-200"
@@ -157,7 +151,7 @@ export function ConfirmDialog({
                     >
                         {cancelText}
                     </AlertDialogCancel>
-                    <AlertDialogAction 
+                    <AlertDialogAction
                         className={cn(
                             "min-w-[84px] h-8",
                             styles.button,
@@ -173,4 +167,4 @@ export function ConfirmDialog({
             </AlertDialogContent>
         </AlertDialog>
     )
-} 
+})

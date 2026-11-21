@@ -182,7 +182,6 @@ package-lock.json
 .next/
 .claude/
 .agent/
-docs/
 
 # 注意：yarn.lock 必须纳入版本控制，保证依赖版本可复现，不要加回此文件
 

@@ -4,13 +4,18 @@ const nextConfig = {
   poweredByHeader: false,
   //devIndicators: false,
   compress: true,
+  turbopack: {},
   images: {
-    domains: ['oss.01bai.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'oss.01bai.com',
         port: '99',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'oss.01bai.com',
         pathname: '/**',
       },
     ],

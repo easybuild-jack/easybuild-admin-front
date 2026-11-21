@@ -1,8 +1,8 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
 import type {
-    QueryParams,
-    SaveParams,
+QueryParams,
+SaveParams,
 } from '@/types/user'
 
 // 获取列表

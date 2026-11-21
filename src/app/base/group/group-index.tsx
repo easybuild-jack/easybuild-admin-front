@@ -1,24 +1,22 @@
-﻿'use client'
+'use client'
 
 import dynamic from 'next/dynamic'
 import { Button } from "@/components/ui/button"
 import type { TableColumn } from "@/components/custom/table"
-import { Plus, Search, RotateCw, MoreHorizontal, Edit, Trash2 } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { Plus,Search,RotateCw,Edit,Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
-import { useState, useEffect, useCallback } from "react"
-import { getGroupList, saveGroup, toggleGroupForbiddenFlag, deleteGroup } from "@/api/group"
+import { useState,useEffect,useCallback } from "react"
+import { getGroupList,saveGroup,toggleGroupForbiddenFlag,deleteGroup } from "@/api/group"
 import type { Group } from "@/types/group"
 import { useDebounce } from "@/hooks/use-debounce"
-import { showMessage, showError } from '@/components/custom/notifications'
+import { showMessage,showError } from '@/components/custom/notifications'
 import { ConfirmDialog } from "@/components/custom/confirm-dialog"
-import { FORBIDDEN_FLAG_CONFIG, FORBIDDEN_FLAG_OPTIONS, getForbiddenFlagConfig } from '@/config/forbidden-flag'
+import { FORBIDDEN_FLAG_CONFIG,FORBIDDEN_FLAG_OPTIONS,getForbiddenFlagConfig } from '@/config/forbidden-flag'
 import { GroupEdit } from "./group-edit"
 import { DEFAULT_PAGE_SIZE } from "@/config/pagination"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Switch } from "@/components/ui/switch"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { usePageTitle } from '@/store'
 
 // 状态选项
@@ -305,14 +303,6 @@ export function GroupPage() {
                     <Switch
                         checked={isEnabled}
                         onCheckedChange={() => handleToggleForbiddenFlag(record)}
-                        className={cn(
-                            "data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-gray-400",
-                            "h-6 w-11",
-                            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                            "disabled:cursor-not-allowed disabled:opacity-50",
-                            "rounded-full border-2 border-transparent transition-colors",
-                            "focus:outline-none"
-                        )}
                     />
                 )
             }

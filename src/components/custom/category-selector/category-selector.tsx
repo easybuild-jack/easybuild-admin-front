@@ -1,14 +1,32 @@
 'use client'
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { X } from "lucide-react"
 import { getCategoryDropdownList } from "@/api/category"
 import { CategoryDialog } from "./category-dialog"
 import type { CategorySelectorProps, CategoryValue, CategoryOptions, CategoryOption } from "./types"
 
+const EMPTY_VALUE: CategoryValue = {}
+
+// O(N + M) 去重合并选项
+function mergeOptions(prevOptions: CategoryOption[], newOptions: CategoryOption[]): CategoryOption[] {
+    if (newOptions.length === 0) return prevOptions
+    const seen = new Set(prevOptions.map(item => item.value))
+    let changed = false
+    const merged = [...prevOptions]
+    for (const item of newOptions) {
+        if (!seen.has(item.value)) {
+            seen.add(item.value)
+            merged.push(item)
+            changed = true
+        }
+    }
+    return changed ? merged : prevOptions
+}
+
 export function CategorySelector({
-    value = {},
+    value = EMPTY_VALUE,
     onChange,
     groupId,
     placeholder = "选择分类...",
@@ -18,12 +36,17 @@ export function CategorySelector({
     width = "240px"
 }: CategorySelectorProps) {
     const [dialogOpen, setDialogOpen] = useState(false)
-    const [tempValue, setTempValue] = useState<CategoryValue>({})
+    const [tempValue, setTempValue] = useState<CategoryValue>(EMPTY_VALUE)
     const [categoryOptions, setCategoryOptions] = useState<CategoryOptions>({
         first: [],
         second: [],
         third: []
     })
+
+    const tempValueRef = useRef(tempValue)
+    tempValueRef.current = tempValue
+    const categoryOptionsRef = useRef(categoryOptions)
+    categoryOptionsRef.current = categoryOptions
 
     // 加载一级分类
     const loadFirstLevelCategories = useCallback(async () => {
@@ -70,12 +93,13 @@ export function CategorySelector({
 
     // 搜索分类
     const handleCategorySearch = useCallback(async (keyword: string, level: 'first' | 'second' | 'third'): Promise<CategoryOption[]> => {
+        const currentTemp = tempValueRef.current
         let parentId: string | undefined
 
         if (level === 'second') {
-            parentId = tempValue.firstCategoryId
+            parentId = currentTemp.firstCategoryId
         } else if (level === 'third') {
-            parentId = tempValue.secondCategoryId
+            parentId = currentTemp.secondCategoryId
         }
 
         if ((level === 'second' && !parentId) || (level === 'third' && !parentId)) {
@@ -90,7 +114,6 @@ export function CategorySelector({
                 groupId
             })
 
-            // 合并搜索结果到现有选项中
             setCategoryOptions(prev => ({
                 ...prev,
                 [level]: mergeOptions(prev[level], data)
@@ -101,18 +124,7 @@ export function CategorySelector({
             console.error('Failed to search categories:', error)
             return []
         }
-    }, [tempValue, groupId])
-
-    // 合并选项（去重）
-    const mergeOptions = (prevOptions: CategoryOption[], newOptions: CategoryOption[]): CategoryOption[] => {
-        const merged = [...prevOptions]
-        newOptions.forEach(item => {
-            if (!merged.some(existing => existing.value === item.value)) {
-                merged.push(item)
-            }
-        })
-        return merged
-    }
+    }, [groupId])
 
     // 初始化：加载一级分类
     useEffect(() => {
@@ -133,15 +145,15 @@ export function CategorySelector({
     }, [value.secondCategoryId, categoryOptions.second.length, loadThirdLevelCategories])
 
     // 打开弹框
-    const handleOpenDialog = () => {
+    const handleOpenDialog = useCallback(() => {
         if (disabled) return
         setTempValue(value)
         setDialogOpen(true)
-    }
+    }, [disabled, value])
 
     // 一级分类变化
-    const handleFirstCategoryChange = async (newValue: string) => {
-        const selected = categoryOptions.first.find(opt => opt.value === newValue)
+    const handleFirstCategoryChange = useCallback(async (newValue: string) => {
+        const selected = categoryOptionsRef.current.first.find(opt => opt.value === newValue)
         const updates: CategoryValue = {
             firstCategoryId: newValue,
             firstCategoryName: selected?.label || '',
@@ -162,13 +174,13 @@ export function CategorySelector({
         }
 
         setTempValue(updates)
-    }
+    }, [loadSecondLevelCategories])
 
     // 二级分类变化
-    const handleSecondCategoryChange = async (newValue: string) => {
-        const selected = categoryOptions.second.find(opt => opt.value === newValue)
+    const handleSecondCategoryChange = useCallback(async (newValue: string) => {
+        const selected = categoryOptionsRef.current.second.find(opt => opt.value === newValue)
         const updates: CategoryValue = {
-            ...tempValue,
+            ...tempValueRef.current,
             secondCategoryId: newValue,
             secondCategoryName: selected?.label || '',
             thirdCategoryId: '',
@@ -185,26 +197,26 @@ export function CategorySelector({
         }
 
         setTempValue(updates)
-    }
+    }, [loadThirdLevelCategories])
 
     // 三级分类变化
-    const handleThirdCategoryChange = (newValue: string) => {
-        const selected = categoryOptions.third.find(opt => opt.value === newValue)
-        setTempValue({
-            ...tempValue,
+    const handleThirdCategoryChange = useCallback((newValue: string) => {
+        const selected = categoryOptionsRef.current.third.find(opt => opt.value === newValue)
+        setTempValue(prev => ({
+            ...prev,
             thirdCategoryId: newValue,
             thirdCategoryName: selected?.label || ''
-        })
-    }
+        }))
+    }, [])
 
     // 确认选择
-    const handleConfirm = () => {
-        onChange?.(tempValue)
+    const handleConfirm = useCallback(() => {
+        onChange?.(tempValueRef.current)
         setDialogOpen(false)
-    }
+    }, [onChange])
 
     // 清除选择
-    const handleClear = (e: React.MouseEvent) => {
+    const handleClear = useCallback((e: React.MouseEvent) => {
         e.stopPropagation()
         const clearedValue: CategoryValue = {
             firstCategoryId: '',
@@ -221,33 +233,27 @@ export function CategorySelector({
             second: [],
             third: []
         }))
-    }
+    }, [onChange])
 
     // 获取显示文本（只显示最小级别的分类）
-    const getDisplayText = (): string => {
+    const displayText = useMemo(() => {
         if (value.thirdCategoryId) {
-            const third = categoryOptions.third.find(opt => opt.value === value.thirdCategoryId)
-            return third?.label || ''
+            return categoryOptions.third.find(opt => opt.value === value.thirdCategoryId)?.label || ''
         }
-
         if (value.secondCategoryId) {
-            const second = categoryOptions.second.find(opt => opt.value === value.secondCategoryId)
-            return second?.label || ''
+            return categoryOptions.second.find(opt => opt.value === value.secondCategoryId)?.label || ''
         }
-
         if (value.firstCategoryId) {
-            const first = categoryOptions.first.find(opt => opt.value === value.firstCategoryId)
-            return first?.label || ''
+            return categoryOptions.first.find(opt => opt.value === value.firstCategoryId)?.label || ''
         }
-
         return ''
-    }
+    }, [value.firstCategoryId, value.secondCategoryId, value.thirdCategoryId, categoryOptions])
 
-    const displayText = getDisplayText()
+    const containerStyle = useMemo(() => ({ width }), [width])
 
     return (
         <>
-            <div className={className} style={{ width }}>
+            <div className={className} style={containerStyle}>
                 <div className="relative">
                     <Input
                         placeholder={placeholder}
@@ -259,6 +265,7 @@ export function CategorySelector({
                     />
                     {displayText && !disabled && (
                         <button
+                            type="button"
                             onClick={handleClear}
                             className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 rounded-sm opacity-70 hover:opacity-100 flex items-center justify-center"
                         >

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect,useState } from 'react'
 import { DEFAULT_LOCALE } from '@/config/pagination'
 import type { LocaleType } from '@/config/i18n/pagination'
 

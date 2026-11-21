@@ -1,36 +1,41 @@
 import type { FormField } from './types'
 
-// 使用 WeakMap 缓存格式化结果
-const formatCache = new WeakMap()
+// 嵌套 WeakMap 缓存：(data, fields) -> 格式化结果，修复原每次新建 { data, fields } 键导致缓存永不命中的问题
+const formatCache = new WeakMap<object, WeakMap<FormField[], Record<string, any>>>()
+
+function buildFieldMap(fields: FormField[]): Map<string, FormField> {
+  const map = new Map<string, FormField>()
+  for (const field of fields) {
+    map.set(field.name, field)
+  }
+  return map
+}
 
 // 格式化表单数据
 export function formatFormData(data: Record<string, any>, fields: FormField[]) {
-  // 检查缓存
-  const cacheKey = { data, fields }
-  if (formatCache.has(cacheKey)) {
-    return formatCache.get(cacheKey)
+  let fieldsCache = formatCache.get(data)
+  if (fieldsCache?.has(fields)) {
+    return fieldsCache.get(fields)!
   }
 
-  const result = Object.entries(data).reduce((acc, [key, value]) => {
-    const field = fields.find(f => f.name === key)
+  const fieldMap = buildFieldMap(fields)
+  const result: Record<string, any> = {}
+  for (const [key, value] of Object.entries(data)) {
+    const field = fieldMap.get(key)
+    result[key] = field?.transform?.input ? field.transform.input(value) : formatValue(value)
+  }
 
-    if (field?.transform?.input) {
-      acc[key] = field.transform.input(value)
-    } else {
-      acc[key] = formatValue(value)
-    }
-
-    return acc
-  }, {} as Record<string, any>)
-
-  // 缓存结果
-  formatCache.set(cacheKey, result)
+  if (!fieldsCache) {
+    fieldsCache = new WeakMap()
+    formatCache.set(data, fieldsCache)
+  }
+  fieldsCache.set(fields, result)
   return result
 }
 
 // 优化值格式化
 function formatValue(value: any): any {
-  if (typeof value === 'string' && !isNaN(Number(value))) {
+  if (typeof value === 'string' && value !== '' && !isNaN(Number(value))) {
     return Number(value)
   }
 
@@ -43,17 +48,13 @@ function formatValue(value: any): any {
 
 // 处理表单提交数据
 export function formatSubmitData(data: Record<string, any>, fields: FormField[]) {
-  return Object.entries(data).reduce((acc, [key, value]) => {
-    const field = fields.find(f => f.name === key)
-
-    if (field?.transform?.output) {
-      acc[key] = field.transform.output(value)
-    } else {
-      acc[key] = value
-    }
-
-    return acc
-  }, {} as Record<string, any>)
+  const fieldMap = buildFieldMap(fields)
+  const result: Record<string, any> = {}
+  for (const [key, value] of Object.entries(data)) {
+    const field = fieldMap.get(key)
+    result[key] = field?.transform?.output ? field.transform.output(value) : value
+  }
+  return result
 }
 
 // 处理数字值
@@ -87,10 +88,10 @@ export function debounce<T extends (...args: any[]) => any>(
   fn: T,
   delay: number
 ): (...args: Parameters<T>) => void {
-  let timer: NodeJS.Timeout
+  let timer: ReturnType<typeof setTimeout> | undefined
 
   return (...args: Parameters<T>) => {
-    clearTimeout(timer)
+    if (timer) clearTimeout(timer)
     timer = setTimeout(() => fn(...args), delay)
   }
 }

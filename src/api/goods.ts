@@ -1,6 +1,6 @@
 import http from './http'
 import { API_URLS } from '@/config/api-url'
-import type { GoodsQueryParams, GoodsListResponse, GoodsItem } from '@/types/goods'
+import type { GoodsQueryParams,GoodsListResponse,GoodsItem } from '@/types/goods'
 
 // 获取列表
 export const getList = (params: GoodsQueryParams): Promise<GoodsListResponse> => {

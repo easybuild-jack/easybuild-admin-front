@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, memo } from "react"
+import React,{ useMemo,memo } from "react"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -8,21 +8,21 @@ import { AppSidebar } from "@/components/layout/app-sidebar"
 import { HeaderActions } from "@/components/layout/header-actions"
 import { NavUser } from "@/components/layout/nav-user"
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
+Breadcrumb,
+BreadcrumbItem,
+BreadcrumbList,
+BreadcrumbPage,
+BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
+SidebarInset,
+SidebarProvider,
+SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { useMenuStore } from "@/store/slices/menu-slice"
-import { useSearchCollapse, useSearchArea } from "@/store"
-import { Search, ChevronUp, ChevronDown } from "lucide-react"
+import { useSearchCollapse,useSearchArea } from "@/store"
+import { ChevronUp } from "lucide-react"
 import type { RouteConfig } from "@/config/routes"
 
 interface LayoutProps {

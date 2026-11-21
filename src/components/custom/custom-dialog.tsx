@@ -1,10 +1,9 @@
 'use client'
 
 import * as React from "react"
-import { Dialog, DialogContent, DialogClose, DialogTitle } from "../ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "../ui/dialog"
 import { VisuallyHidden } from "../ui/visually-hidden"
 import { cn } from "@/lib/utils"
-import { X } from "lucide-react"
 import { LoadingSpinner } from "../ui/loading-spinner"
 
 interface CustomDialogProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -34,9 +33,11 @@ const maxWidthClasses = {
     '5xl': 'max-w-5xl',
     '6xl': 'max-w-6xl',
     '7xl': 'max-w-7xl'
-}
+} as const
 
-export function CustomDialog({
+const preventDefault = (e: Event) => e.preventDefault()
+
+export const CustomDialog = React.memo(function CustomDialog({
     open,
     onOpenChange,
     header,
@@ -56,6 +57,27 @@ export function CustomDialog({
     const widthClass = maxWidthClasses[maxWidth as keyof typeof maxWidthClasses] || ''
     const [isMaximized, setIsMaximized] = React.useState(false)
 
+    const toggleMaximize = React.useCallback(() => {
+        setIsMaximized(prev => !prev)
+    }, [])
+
+    const dialogStyle = React.useMemo<React.CSSProperties>(() => ({
+        maxHeight: isMaximized ? 'none' : height ? 'none' : '90vh',
+        height: isMaximized ? '100vh' : height,
+        width: isMaximized ? '100vw' : width,
+        maxWidth: isMaximized ? 'none' : undefined,
+    }), [isMaximized, height, width])
+
+    const headerStyle = React.useMemo<React.CSSProperties | undefined>(
+        () => (headerHeight ? { minHeight: headerHeight } : undefined),
+        [headerHeight]
+    )
+
+    const footerStyle = React.useMemo<React.CSSProperties | undefined>(
+        () => (footerHeight ? { minHeight: footerHeight } : undefined),
+        [footerHeight]
+    )
+
     return (
         <Dialog
             open={open}
@@ -73,16 +95,11 @@ export function CustomDialog({
                     isMaximized && "w-screen h-screen max-w-none rounded-none",
                     className && !isMaximized ? className : '',
                 )}
-                style={{
-                    maxHeight: isMaximized ? 'none' : height ? 'none' : '90vh',
-                    height: isMaximized ? '100vh' : height,
-                    width: isMaximized ? '100vw' : width,
-                    maxWidth: isMaximized ? 'none' : undefined,
-                }}
+                style={dialogStyle}
                 {...props}
-                onPointerDownOutside={(e) => e.preventDefault()}
-                onEscapeKeyDown={(e) => e.preventDefault()}
-                onOpenAutoFocus={(e) => e.preventDefault()}
+                onPointerDownOutside={preventDefault}
+                onEscapeKeyDown={preventDefault}
+                onOpenAutoFocus={preventDefault}
             >
                 {/* 隐藏的标题用于屏幕阅读器 */}
                 <VisuallyHidden>
@@ -91,7 +108,8 @@ export function CustomDialog({
 
                 {/* 最大化按钮 */}
                 <button
-                    onClick={() => setIsMaximized(prev => !prev)}
+                    type="button"
+                    onClick={toggleMaximize}
                     className="absolute right-11 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
                     title={isMaximized ? "还原" : "最大化"}
                 >
@@ -145,10 +163,7 @@ export function CustomDialog({
                 )}
 
                 {/* 头部 */}
-                <div
-                    className="flex-shrink-0"
-                    style={headerHeight ? { minHeight: headerHeight } : undefined}
-                >
+                <div className="flex-shrink-0" style={headerStyle}>
                     <div className="px-6 flex items-center py-3">
                         {header}
                     </div>
@@ -160,10 +175,7 @@ export function CustomDialog({
                 </div>
 
                 {/* 底部 */}
-                <div
-                    className="flex-shrink-0"
-                    style={footerHeight ? { minHeight: footerHeight } : undefined}
-                >
+                <div className="flex-shrink-0" style={footerStyle}>
                     <div className="px-6 flex items-center py-3">
                         {footer}
                     </div>
@@ -171,4 +183,4 @@ export function CustomDialog({
             </DialogContent>
         </Dialog>
     )
-}
+})

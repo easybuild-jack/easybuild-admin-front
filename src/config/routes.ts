@@ -1,46 +1,33 @@
 import {
-  LayoutDashboard,  // 仪表盘
-  Settings,         // 系统设置
-  Layers,          // 基础设置
-  Image,           // Banner管理
-  Briefcase,       // 品牌管理
-  FolderTree,      // 分类分组管理
-  FolderOpen,      // 分类管理
-  Tags,            // 标签管理
-  Building2,       // 部门管理
-  Shield,          // 角色管理
-  Users,           // 员工管理
-  BookOpen,        // 字典管理
-  ShoppingCart,    // 订单管理
-  Package,         // 商品管理
-  ShoppingBag,     // 购物袋
-  RotateCcw,       // 退款管理
-  Store,           // 超市管理
-  Box,             // 货柜管理
-  // 新增图标
-  Sparkles,        // 运营管理
-  UserCircle,      // 用户管理
-  UsersRound,      // 会员管理
-  Warehouse,       // 存放管理
-  PackageSearch,   // 商品项管理
-  ShieldCheck,     // 权限管理
-  Key,             // 密钥/权限
-  Building,        // 企业/商超
-  Boxes,           // 商品模块
-  ClipboardList,   // 订单模块
-  Home,            // 首页
-  Archive,         // 存放
-  Trophy,          // 运营
-  CircleDot,       // 默认/未匹配
-  Database,        // 存放
-  Lock,            // 权限
-  BoxSelect,       // 商品
-  ScrollText,      // 订单项
-  ReceiptText,     // 订单管理
-  ClipboardCheck,  // 订单核销
-  UserCog,         // 用户设置
-  Package2,        // 商品项
-  ListOrdered      // 列表
+LayoutDashboard, // 系统设置
+Layers, // 基础设置
+Image, // Banner管理
+Briefcase, // 品牌管理
+FolderTree, // 分类分组管理
+FolderOpen, // 分类管理
+Tags, // 标签管理
+Building2, // 部门管理
+Shield, // 角色管理
+Users, // 员工管理
+BookOpen, // 订单管理
+Package, // 购物袋
+RotateCcw, // 退款管理
+Store, // 超市管理
+Box, // 货柜管理
+
+// 新增图标
+Sparkles, // 运营管理
+UserCircle, // 用户管理
+UsersRound, // 会员管理
+Warehouse, // 存放管理
+PackageSearch, // 商品项管理
+ShieldCheck, // 权限管理
+Key, // 密钥/权限
+Building, // 企业/商超
+Boxes, // 商品模块
+ClipboardList, // 订单模块
+Home, // 订单项
+ReceiptText
 } from "lucide-react"
 
 // 定义菜单资源的接口类型

@@ -1,36 +1,28 @@
 "use client"
 
-import React, { useEffect, useState, useCallback, memo } from "react"
+import { useEffect,useState,useCallback,memo } from "react"
 import { useTheme } from "next-themes"
 import {
-  Languages,
-  Bell,
-  Palette,
-  Moon,
-  Sun,
-  Check,
-  Settings,
+Languages,
+Bell,
+Palette,
+Moon,
+Sun,
+Check
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
+DropdownMenu,
+DropdownMenuContent,DropdownMenuLabel,DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+Tooltip,
+TooltipContent,
+TooltipProvider,
+TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { themeColors, themeColorOptions, type ThemeColor } from "@/config/theme-colors"
+import { themeColors,themeColorOptions,type ThemeColor } from "@/config/theme-colors"
 
 export const HeaderActions = memo(function HeaderActions() {
   const { theme, setTheme } = useTheme()

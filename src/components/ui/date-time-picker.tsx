@@ -1,16 +1,16 @@
 "use client"
 
 import * as React from "react"
-import { Calendar as CalendarIcon, Clock } from "lucide-react"
+import { Calendar as CalendarIcon,Clock } from "lucide-react"
 import { format } from "date-fns"
 import type { Locale } from "date-fns"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+Popover,
+PopoverContent,
+PopoverTrigger,
 } from "@/components/ui/popover"
 import { Input } from "@/components/ui/input"
 import { zhCN } from "date-fns/locale"
@@ -112,7 +112,7 @@ export function DateTimePicker({
             selected={selectedDate}
             onSelect={handleDateSelect}
             locale={locale}
-            initialFocus
+            autoFocus
           />
           <div className="flex items-center gap-2 px-1 border-t pt-4">
             <Clock className="h-4 w-4 text-muted-foreground" />
