@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { usePageTitle } from '@/store'
+import { siteConfig } from '@/config/site'
 import {
   Layers,
   Zap,
@@ -204,16 +205,32 @@ export default function Home() {
                   EasyBuild Admin
                   <span className="mx-3 font-light text-muted-foreground/40">—</span>
                   <span className="bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
-                    易构
+                    易构中后台
                   </span>
                 </h1>
                 <p className="text-[15px] sm:text-base text-muted-foreground leading-[1.85] max-w-2xl">
-                  一款清爽、美观、开箱即用的现代化中后台前端框架，为全栈工程师、前端及后端工程师量身打造。遵循
+                  易构（EasyBuild）产品生态中的中后台前端脚手架 ——
+                  一款清爽、美观、开箱即用的现代化框架，为全栈工程师、前端及后端工程师量身打造。遵循
                   <span className="mx-1 font-semibold text-foreground underline decoration-primary/40 decoration-2 underline-offset-4">
                     业务无关、按需组装、即插即用
                   </span>
                   的核心理念。
                 </p>
+                <a
+                  href={siteConfig.links.ecosystem}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.06] px-3.5 py-1.5 text-[12.5px] font-medium text-primary transition-colors hover:border-primary/45 hover:bg-primary/[0.12]"
+                >
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary" />
+                  </span>
+                  易构产品生态主站
+                  <span className="font-mono text-[11.5px] tracking-tight text-primary/80">
+                    www.easybuild.pro
+                  </span>
+                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </a>
               </div>
 
               {/* Highlight Pills */}
