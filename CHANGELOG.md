@@ -15,6 +15,7 @@ First official release of EasyBuild Admin, a Next.js 16 + React 19 + TypeScript 
 - Theme engine with 20 preset color palettes and light/dark/system modes.
 - Zero-backend Mock API served by the same-origin catch-all route `src/app/api/[...slug]/route.ts`, with in-memory CRUD; disabled when `NEXT_PUBLIC_ENV=production`.
 - Site configuration, SEO metadata, sitemap, robots and dynamic Open Graph images.
+- Released under the MIT License (`LICENSE`); third-party notices (shadcn/ui, fonts) in `THIRD_PARTY_NOTICES.md`.
 - Documentation: multi-language READMEs (English, 简体中文, 繁體中文（香港/台灣）, 日本語), project overview and developer guide (Chinese), environment variable and Mock deployment notes.
 
 ### Known limitations

@@ -170,6 +170,12 @@ If **EasyBuild Admin** saves you time or helps your project, feel free to buy me
 
 ---
 
+## 📄 License
+
+Released under the [MIT License](./LICENSE). Copyright (c) 2026 Jack Liu (easybuild-jack). Third-party notices are listed in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md).
+
+---
+
 ## ⭐ Star History
 
 If you find this project helpful, please consider giving it a **Star**!

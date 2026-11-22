@@ -170,6 +170,12 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 ---
 
+## 📄 许可证
+
+本项目基于 [MIT 许可证](./LICENSE) 开源。Copyright (c) 2026 Jack Liu (easybuild-jack)。第三方声明见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。
+
+---
+
 ## ⭐ Star History
 
 如果这个项目对你有帮助，欢迎点一个 **Star** 支持一下！
