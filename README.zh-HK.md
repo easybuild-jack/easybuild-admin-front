@@ -31,6 +31,7 @@
 
 - **演示網址**：[https://admin.easybuild.pro](https://admin.easybuild.pro)
 - **體驗賬號**：`admin` / `12345`
+- 演示站完全運行在內置 Mock 接口（同域 Next.js API Route）上，並非真實後端；數據均為虛構，僅保存在記憶體中，可能隨時重置。
 
 ---
 
@@ -89,8 +90,34 @@ yarn dev          # 開發環境（對接內置 Mock：.env.development）
 yarn dev:test     # 測試環境（對接本地後端 http://localhost:5001/api：.env.test）
 yarn build:prod   # 構建生產版本（.env.production）
 yarn start:prod   # 啟動生產服務（埠號 4000）
-yarn lint         # 代碼規範檢查
+yarn next typegen && yarn tsc --noEmit   # 類型檢查
 ```
+
+### 環境變量
+
+倉庫中提交的 `.env.development` / `.env.test` / `.env.production` 只包含公開、非敏感配置。本地覆蓋請寫入 `.env.local`（已被 git 忽略），切勿提交真實憑證。
+
+| 變量 | 說明 | `.env.development` | `.env.production` |
+|---|---|---|---|
+| `NEXT_PUBLIC_ENV` | 運行模式；設為 `production` 時內置 Mock 接口**關閉**（返回 404） | `development` | `production` |
+| `NEXT_PUBLIC_API_URL` | Axios 請求的接口基礎地址 | `/api` | `/api` |
+| `NEXT_PUBLIC_UPLOAD_API_URL` | 文件上傳基礎地址 | `/api` | `/api` |
+| `NEXT_PUBLIC_APP_NAME` | 應用名稱 | `EasyBuild-Admin-Dev` | `EasyBuild-Admin` |
+| `NEXT_PUBLIC_SITE_URL` | SEO 元數據使用的網站地址（預設 `https://admin.easybuild.pro`） | – | `https://admin.easybuild.pro` |
+
+### Mock 接口與部署
+
+- Mock 接口由通配路由 `src/app/api/[...slug]/route.ts` 提供，並分發到 `src/mock/` 下的處理函數。數據只保存在伺服器記憶體中：重啟即重置，且不會在多個 Serverless 實例間共享。
+- 使用倉庫自帶的 `.env.production` 執行 `yarn build:prod` 時 Mock 處於關閉狀態，需要把 `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_UPLOAD_API_URL` 指向真實後端（如 [EasyBuild Admin API](https://github.com/easybuild-jack/easybuild-admin-api)）。
+- 如需部署純 Mock 演示站（即 [admin.easybuild.pro](https://admin.easybuild.pro) 在 Vercel 上的方式），保持生產構建，並在託管平台環境變量中設定：
+
+```bash
+NEXT_PUBLIC_ENV=development
+NEXT_PUBLIC_API_URL=/api
+NEXT_PUBLIC_UPLOAD_API_URL=/api
+```
+
+本地等效指令：`NEXT_PUBLIC_ENV=development yarn build:prod && NEXT_PUBLIC_ENV=development yarn start:prod`。
 
 ---
 
@@ -110,6 +137,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 - 📖 **[項目說明文檔](./docs/项目说明文档.md)**：完整的架構設計、組件能力一覽與後端對接協議說明
 - 🛠 **[開發文檔](./docs/开发文档.md)**：面向二次開發與 AI Agent 的純技術手冊（目錄約定、數據流、新增/修改模組 SOP 與避坑清單）
+- 📝 **[更新日誌](./CHANGELOG.md)**：版本發佈說明
 
 ---
 

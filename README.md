@@ -31,6 +31,7 @@ All navigation menus and permissions are dynamically driven by backend APIs with
 
 - **URL**: [https://admin.easybuild.pro](https://admin.easybuild.pro)
 - **Demo Account**: `admin` / `12345`
+- The demo runs entirely on the built-in Mock API (a same-origin Next.js API Route), not a real backend. All data is fictional, kept in memory, and may be reset at any time.
 
 ---
 
@@ -89,8 +90,34 @@ yarn dev          # Development mode with built-in Mock API (.env.development)
 yarn dev:test     # Test mode targeting local backend http://localhost:5001/api (.env.test)
 yarn build:prod   # Production build (.env.production)
 yarn start:prod   # Start production server on port 4000
-yarn lint         # Run ESLint
+yarn next typegen && yarn tsc --noEmit   # Type check
 ```
+
+### Environment Variables
+
+Committed `.env.development` / `.env.test` / `.env.production` files contain only public, non-secret settings. Put local overrides in `.env.local` (git-ignored); never commit real credentials.
+
+| Variable | Description | `.env.development` | `.env.production` |
+|---|---|---|---|
+| `NEXT_PUBLIC_ENV` | Runtime mode; the built-in Mock API is **disabled** (returns 404) when set to `production` | `development` | `production` |
+| `NEXT_PUBLIC_API_URL` | API base URL used by the Axios client | `/api` | `/api` |
+| `NEXT_PUBLIC_UPLOAD_API_URL` | File upload base URL | `/api` | `/api` |
+| `NEXT_PUBLIC_APP_NAME` | Application name | `EasyBuild-Admin-Dev` | `EasyBuild-Admin` |
+| `NEXT_PUBLIC_SITE_URL` | Canonical site URL for SEO metadata (defaults to `https://admin.easybuild.pro`) | – | `https://admin.easybuild.pro` |
+
+### Mock API & Deployment
+
+- The Mock API is served by the catch-all route `src/app/api/[...slug]/route.ts` and dispatched to handlers in `src/mock/`. Data lives in server memory only: it resets on restart and is not shared between serverless instances.
+- `yarn build:prod` with the committed `.env.production` turns the Mock off, so point `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_UPLOAD_API_URL` at your real backend (e.g. [EasyBuild Admin API](https://github.com/easybuild-jack/easybuild-admin-api)).
+- To host a Mock-only demo (as [admin.easybuild.pro](https://admin.easybuild.pro) does on Vercel), keep the production build but set these variables in the hosting environment:
+
+```bash
+NEXT_PUBLIC_ENV=development
+NEXT_PUBLIC_API_URL=/api
+NEXT_PUBLIC_UPLOAD_API_URL=/api
+```
+
+Locally the equivalent is `NEXT_PUBLIC_ENV=development yarn build:prod && NEXT_PUBLIC_ENV=development yarn start:prod`.
 
 ---
 
@@ -110,6 +137,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 - 📖 **[Project Overview (ZH)](./docs/项目说明文档.md)**: Full architecture overview, component catalog, and backend API conventions
 - 🛠 **[Developer Guide (ZH)](./docs/开发文档.md)**: Pure technical handbook covering directory layout, data flow, adding/modifying modules, and best practices
+- 📝 **[Changelog](./CHANGELOG.md)**: Release notes
 
 ---
 

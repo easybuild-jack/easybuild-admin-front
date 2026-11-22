@@ -31,6 +31,7 @@
 
 - **デモ URL**：[https://admin.easybuild.pro](https://admin.easybuild.pro)
 - **デモアカウント**：`admin` / `12345`
+- デモサイトは内蔵 Mock API（同一オリジンの Next.js API Route）のみで動作しており、実際のバックエンドではありません。データはすべて架空のもので、メモリ上にのみ保持され、随時リセットされる可能性があります。
 
 ---
 
@@ -89,8 +90,34 @@ yarn dev          # 開発モード（内蔵 Mock を使用：.env.development�
 yarn dev:test     # テストモード（ローカルバックエンド http://localhost:5001/api：.env.test）
 yarn build:prod   # 本番ビルド（.env.production）
 yarn start:prod   # 本番サーバー起動（ポート 4000）
-yarn lint         # ESLint チェック
+yarn next typegen && yarn tsc --noEmit   # 型チェック
 ```
+
+### 環境変数
+
+リポジトリにコミットされている `.env.development` / `.env.test` / `.env.production` には公開可能な非機密設定のみが含まれます。ローカルでの上書きは `.env.local`（git 管理外）に記述し、実際の認証情報は絶対にコミットしないでください。
+
+| 変数 | 説明 | `.env.development` | `.env.production` |
+|---|---|---|---|
+| `NEXT_PUBLIC_ENV` | 実行モード。`production` の場合、内蔵 Mock API は**無効**（404 を返す） | `development` | `production` |
+| `NEXT_PUBLIC_API_URL` | Axios クライアントの API ベース URL | `/api` | `/api` |
+| `NEXT_PUBLIC_UPLOAD_API_URL` | ファイルアップロードのベース URL | `/api` | `/api` |
+| `NEXT_PUBLIC_APP_NAME` | アプリケーション名 | `EasyBuild-Admin-Dev` | `EasyBuild-Admin` |
+| `NEXT_PUBLIC_SITE_URL` | SEO メタデータ用のサイト URL（既定値 `https://admin.easybuild.pro`） | – | `https://admin.easybuild.pro` |
+
+### Mock API とデプロイ
+
+- Mock API はキャッチオールルート `src/app/api/[...slug]/route.ts` で提供され、`src/mock/` 配下のハンドラーに振り分けられます。データはサーバーメモリ上のみに保持され、再起動でリセットされ、複数の Serverless インスタンス間では共有されません。
+- 同梱の `.env.production` で `yarn build:prod` を実行すると Mock は無効になるため、`NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_UPLOAD_API_URL` を実際のバックエンド（例：[EasyBuild Admin API](https://github.com/easybuild-jack/easybuild-admin-api)）に向けてください。
+- Mock のみのデモサイトをホストする場合（[admin.easybuild.pro](https://admin.easybuild.pro) の Vercel 構成と同じ）、本番ビルドのままホスティング環境で次の変数を設定します：
+
+```bash
+NEXT_PUBLIC_ENV=development
+NEXT_PUBLIC_API_URL=/api
+NEXT_PUBLIC_UPLOAD_API_URL=/api
+```
+
+ローカルでの同等コマンド：`NEXT_PUBLIC_ENV=development yarn build:prod && NEXT_PUBLIC_ENV=development yarn start:prod`
 
 ---
 
@@ -110,6 +137,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 - 📖 **[プロジェクト概要 (ZH)](./docs/项目说明文档.md)**：アーキテクチャ全体像、コンポーネント一覧、バックエンド API 仕様
 - 🛠 **[開発ドキュメント (ZH)](./docs/开发文档.md)**：ディレクトリ構成、データフロー、モジュール追加・改修手順、開発ガイドライン
+- 📝 **[変更履歴](./CHANGELOG.md)**：リリースノート
 
 ---
 
