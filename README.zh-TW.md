@@ -31,6 +31,7 @@
 
 - **展示網址**：[https://admin.easybuild.pro](https://admin.easybuild.pro)
 - **體驗帳號**：`admin` / `12345`
+- 示範站完全執行在內建 Mock 介面（同網域 Next.js API Route）上，並非真實後端；資料皆為虛構，僅存放於記憶體，可能隨時重置。
 
 ---
 
@@ -89,8 +90,34 @@ yarn dev          # 開發環境（串接內建 Mock：.env.development）
 yarn dev:test     # 測試環境（串接本地後端 http://localhost:5001/api：.env.test）
 yarn build:prod   # 建置正式環境版本（.env.production）
 yarn start:prod   # 啟動正式環境服務（埠號 4000）
-yarn lint         # 程式碼風格檢查
+yarn next typegen && yarn tsc --noEmit   # 型別檢查
 ```
+
+### 環境變數
+
+儲存庫中提交的 `.env.development` / `.env.test` / `.env.production` 僅包含公開、非敏感設定。本機覆寫請寫入 `.env.local`（已被 git 忽略），切勿提交真實憑證。
+
+| 變數 | 說明 | `.env.development` | `.env.production` |
+|---|---|---|---|
+| `NEXT_PUBLIC_ENV` | 執行模式；設為 `production` 時內建 Mock 介面**關閉**（回傳 404） | `development` | `production` |
+| `NEXT_PUBLIC_API_URL` | Axios 請求的 API 基礎位址 | `/api` | `/api` |
+| `NEXT_PUBLIC_UPLOAD_API_URL` | 檔案上傳基礎位址 | `/api` | `/api` |
+| `NEXT_PUBLIC_APP_NAME` | 應用程式名稱 | `EasyBuild-Admin-Dev` | `EasyBuild-Admin` |
+| `NEXT_PUBLIC_SITE_URL` | SEO 中繼資料使用的網站位址（預設 `https://admin.easybuild.pro`） | – | `https://admin.easybuild.pro` |
+
+### Mock 介面與部署
+
+- Mock 介面由萬用路由 `src/app/api/[...slug]/route.ts` 提供，並分派到 `src/mock/` 下的處理函式。資料只存放在伺服器記憶體：重新啟動即重置，且不會在多個 Serverless 執行個體間共享。
+- 使用儲存庫內建的 `.env.production` 執行 `yarn build:prod` 時 Mock 為關閉狀態，需要將 `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_UPLOAD_API_URL` 指向真實後端（如 [EasyBuild Admin API](https://github.com/easybuild-jack/easybuild-admin-api)）。
+- 如需部署純 Mock 示範站（即 [admin.easybuild.pro](https://admin.easybuild.pro) 在 Vercel 上的方式），保持正式環境建置，並在託管平台環境變數中設定：
+
+```bash
+NEXT_PUBLIC_ENV=development
+NEXT_PUBLIC_API_URL=/api
+NEXT_PUBLIC_UPLOAD_API_URL=/api
+```
+
+本機等效指令：`NEXT_PUBLIC_ENV=development yarn build:prod && NEXT_PUBLIC_ENV=development yarn start:prod`。
 
 ---
 
@@ -110,6 +137,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 - 📖 **[專案說明文件](./docs/项目说明文档.md)**：完整的架構設計、元件能力一覽與後端串接協定說明
 - 🛠 **[開發文件](./docs/开发文档.md)**：面向二次開發與 AI Agent 的純技術手冊（目錄約定、資料流、新增/修改模組 SOP 與注意事項）
+- 📝 **[更新紀錄](./CHANGELOG.md)**：版本發布說明
 
 ---
 
@@ -139,6 +167,12 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
     </td>
   </tr>
 </table>
+
+---
+
+## 📄 授權條款
+
+本專案以 [MIT 授權條款](./LICENSE) 開源。Copyright (c) 2026 Jack Liu (easybuild-jack)。第三方聲明請見 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。
 
 ---
 

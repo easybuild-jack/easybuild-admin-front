@@ -31,6 +31,7 @@
 
 - **演示地址**：[https://admin.easybuild.pro](https://admin.easybuild.pro)
 - **体验账号**：`admin` / `12345`
+- 演示站完全运行在内置 Mock 接口（同域 Next.js API Route）上，并非真实后端；数据均为虚构，仅保存在内存中，可能随时重置。
 
 ---
 
@@ -89,8 +90,34 @@ yarn dev          # 开发环境（对接内置 Mock：.env.development）
 yarn dev:test     # 测试环境（对接本地后端 http://localhost:5001/api：.env.test）
 yarn build:prod   # 构建生产版本（.env.production）
 yarn start:prod   # 启动生产服务（端口 4000）
-yarn lint         # 代码规范检查
+yarn next typegen && yarn tsc --noEmit   # 类型检查
 ```
+
+### 环境变量
+
+仓库中提交的 `.env.development` / `.env.test` / `.env.production` 仅包含公开、非敏感配置。本地覆盖请写入 `.env.local`（已被 git 忽略），切勿提交真实凭据。
+
+| 变量 | 说明 | `.env.development` | `.env.production` |
+|---|---|---|---|
+| `NEXT_PUBLIC_ENV` | 运行模式；设为 `production` 时内置 Mock 接口**关闭**（返回 404） | `development` | `production` |
+| `NEXT_PUBLIC_API_URL` | Axios 请求的接口基础地址 | `/api` | `/api` |
+| `NEXT_PUBLIC_UPLOAD_API_URL` | 文件上传基础地址 | `/api` | `/api` |
+| `NEXT_PUBLIC_APP_NAME` | 应用名称 | `EasyBuild-Admin-Dev` | `EasyBuild-Admin` |
+| `NEXT_PUBLIC_SITE_URL` | SEO 元数据使用的站点地址（默认 `https://admin.easybuild.pro`） | – | `https://admin.easybuild.pro` |
+
+### Mock 接口与部署
+
+- Mock 接口由通配路由 `src/app/api/[...slug]/route.ts` 提供，并分发到 `src/mock/` 下的处理函数。数据只保存在服务端内存中：重启即重置，且不会在多个 Serverless 实例间共享。
+- 使用仓库自带的 `.env.production` 执行 `yarn build:prod` 时 Mock 处于关闭状态，需要把 `NEXT_PUBLIC_API_URL` / `NEXT_PUBLIC_UPLOAD_API_URL` 指向真实后端（如 [EasyBuild Admin API](https://github.com/easybuild-jack/easybuild-admin-api)）。
+- 如需部署纯 Mock 演示站（即 [admin.easybuild.pro](https://admin.easybuild.pro) 在 Vercel 上的方式），保持生产构建，并在托管平台环境变量中设置：
+
+```bash
+NEXT_PUBLIC_ENV=development
+NEXT_PUBLIC_API_URL=/api
+NEXT_PUBLIC_UPLOAD_API_URL=/api
+```
+
+本地等效命令：`NEXT_PUBLIC_ENV=development yarn build:prod && NEXT_PUBLIC_ENV=development yarn start:prod`。
 
 ---
 
@@ -110,6 +137,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 - 📖 **[项目说明文档](./docs/项目说明文档.md)**：完整的架构设计、组件能力一览与后端对接协议说明
 - 🛠 **[开发文档](./docs/开发文档.md)**：面向二次开发与 AI Agent 的纯技术手册（目录约定、数据流、新增/修改模块 SOP 与避坑清单）
+- 📝 **[更新日志](./CHANGELOG.md)**：版本发布说明
 
 ---
 
@@ -139,6 +167,12 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
     </td>
   </tr>
 </table>
+
+---
+
+## 📄 许可证
+
+本项目基于 [MIT 许可证](./LICENSE) 开源。Copyright (c) 2026 Jack Liu (easybuild-jack)。第三方声明见 [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md)。
 
 ---
 
