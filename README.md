@@ -13,7 +13,7 @@ English · [简体中文](./README.zh-CN.md) · [繁體中文（香港）](./REA
 [![Yarn](https://img.shields.io/badge/Yarn-4.7.0-2C8EBB?logo=yarn&logoColor=white)](https://yarnpkg.com/)
 [![GitHub Stars](https://img.shields.io/github/stars/easybuild-jack/easybuild-admin-front?style=flat&color=f59e0b)](https://github.com/easybuild-jack/easybuild-admin-front/stargazers)
 
-[Live Demo](https://admin.easybuild.pro) · [Backend API Repo](https://github.com/easybuild-jack/easybuild-admin-api) · [Project Overview (ZH)](./docs/项目说明文档.md) · [Developer Guide (ZH)](./docs/开发文档.md)
+[Live Demo](https://admin.easybuild.pro) · [Backend API Repo](https://github.com/easybuild-jack/easybuild-admin-api) · [Project Overview (ZH)](./docs/项目说明文档.md) · [Developer Guide (ZH)](./docs/开发文档.md) · [CLI Usage (ZH)](./docs/前端脚手架使用手册.md)
 
 </div>
 
@@ -58,6 +58,8 @@ All navigation menus and permissions are dynamically driven by backend APIs with
 ---
 
 ## 📦 Quick Start
+
+> Prefer scaffolding over cloning? Create a project with `npx easybuild-admin my-project` — see the [CLI Usage Guide (ZH)](./docs/前端脚手架使用手册.md).
 
 ### Prerequisites
 
@@ -138,6 +140,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 - 📖 **[Project Overview (ZH)](./docs/项目说明文档.md)**: Full architecture overview, component catalog, and backend API conventions
 - 🛠 **[Developer Guide (ZH)](./docs/开发文档.md)**: Pure technical handbook covering directory layout, data flow, adding/modifying modules, and best practices
 - 📝 **[Changelog](./CHANGELOG.md)**: Release notes
+- 🧰 **[CLI Usage Guide (ZH)](./docs/前端脚手架使用手册.md)**: Scaffold a new project with `npx easybuild-admin` — parameters, template release pinning, troubleshooting, and exit codes
 
 ---
 

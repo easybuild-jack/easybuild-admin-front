@@ -13,7 +13,7 @@
 [![Yarn](https://img.shields.io/badge/Yarn-4.7.0-2C8EBB?logo=yarn&logoColor=white)](https://yarnpkg.com/)
 [![GitHub Stars](https://img.shields.io/github/stars/easybuild-jack/easybuild-admin-front?style=flat&color=f59e0b)](https://github.com/easybuild-jack/easybuild-admin-front/stargazers)
 
-[線上演示](https://admin.easybuild.pro) · [配套後端倉庫](https://github.com/easybuild-jack/easybuild-admin-api) · [項目說明文檔](./docs/项目说明文档.md) · [開發文檔](./docs/开发文档.md)
+[線上演示](https://admin.easybuild.pro) · [配套後端倉庫](https://github.com/easybuild-jack/easybuild-admin-api) · [項目說明文檔](./docs/项目说明文档.md) · [開發文檔](./docs/开发文档.md) · [腳手架使用手冊](./docs/前端脚手架使用手册.md)
 
 </div>
 
@@ -58,6 +58,8 @@
 ---
 
 ## 📦 快速開始
+
+> 也可以不 clone，直接用腳手架建立：`npx easybuild-admin my-project`，完整說明見 [腳手架使用手冊](./docs/前端脚手架使用手册.md)。
 
 ### 環境要求
 
@@ -138,6 +140,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 - 📖 **[項目說明文檔](./docs/项目说明文档.md)**：完整的架構設計、組件能力一覽與後端對接協議說明
 - 🛠 **[開發文檔](./docs/开发文档.md)**：面向二次開發與 AI Agent 的純技術手冊（目錄約定、數據流、新增/修改模組 SOP 與避坑清單）
 - 📝 **[更新日誌](./CHANGELOG.md)**：版本發佈說明
+- 🧰 **[腳手架使用手冊](./docs/前端脚手架使用手册.md)**：用 `npx easybuild-admin` 建立專案的完整說明（參數、互動流程、模板版本策略、常見問題與退出碼）
 
 ---
 
