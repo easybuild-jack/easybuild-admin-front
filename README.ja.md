@@ -13,7 +13,7 @@
 [![Yarn](https://img.shields.io/badge/Yarn-4.7.0-2C8EBB?logo=yarn&logoColor=white)](https://yarnpkg.com/)
 [![GitHub Stars](https://img.shields.io/github/stars/easybuild-jack/easybuild-admin-front?style=flat&color=f59e0b)](https://github.com/easybuild-jack/easybuild-admin-front/stargazers)
 
-[オンラインデモ](https://admin.easybuild.pro) · [バックエンド API](https://github.com/easybuild-jack/easybuild-admin-api) · [プロジェクト概要 (ZH)](./docs/项目说明文档.md) · [開発ドキュメント (ZH)](./docs/开发文档.md)
+[オンラインデモ](https://admin.easybuild.pro) · [バックエンド API](https://github.com/easybuild-jack/easybuild-admin-api) · [プロジェクト概要 (ZH)](./docs/项目说明文档.md) · [開発ドキュメント (ZH)](./docs/开发文档.md) · [CLI 利用ガイド (ZH)](./docs/前端脚手架使用手册.md)
 
 </div>
 
@@ -57,6 +57,8 @@
 ---
 
 ## 📦 クイックスタート
+
+> clone せずにスキャフォールドで作成する場合：`npx easybuild-admin my-project`（詳細は [CLI 利用ガイド (ZH)](./docs/前端脚手架使用手册.md)）。
 
 ### 動作要件
 
@@ -110,6 +112,7 @@ git clone https://github.com/easybuild-jack/easybuild-admin-api.git
 
 - 📖 **[プロジェクト概要 (ZH)](./docs/项目说明文档.md)**：アーキテクチャ全体像、コンポーネント一覧、バックエンド API 仕様
 - 🛠 **[開発ドキュメント (ZH)](./docs/开发文档.md)**：ディレクトリ構成、データフロー、モジュール追加・改修手順、開発ガイドライン
+- 🧰 **[CLI 利用ガイド (ZH)](./docs/前端脚手架使用手册.md)**：`npx easybuild-admin` でのプロジェクト作成手順（パラメータ、テンプレートのリリース固定、トラブルシューティング、終了コード）
 
 ---
 
